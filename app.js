@@ -13,10 +13,10 @@ const page = {
 };
 
 const STEPS = 2;
-const PARTICLE_COUNT = 4;
-const SPEED = 0.01;
-// const MAX_SPEED = SPEED * 70;
-const CLICK_SPEED = 2;
+const PARTICLE_COUNT = 50;
+const SPEED = 0.04;
+const MAX_SPEED = SPEED * 70;
+const CLICK_SPEED = 3;
 const COLOR = 0.1;
 const SATURATION_STEP = 0.2;
 const SATURATION = 70;
@@ -26,7 +26,7 @@ const BOUNCINESS = 100;
 let particleSpeed = SPEED;
 let particleColor = COLOR;
 let particleSaturation = SATURATION;
-// let maxDir = MAX_SPEED;
+let maxDir = MAX_SPEED;
 const minStarSize = 4;
 const maxStarSize = 20;
 let alphaAdjuster = 0.1;
@@ -99,14 +99,14 @@ function app() {
     particleSaturation > MAX_SATURATION
       ? (particleSaturation = MAX_SATURATION)
       : (particleSaturation += SATURATION_STEP);
-    // maxDir = MAX_SPEED * 1.3;
+    maxDir = MAX_SPEED * 1.3;
   } else {
     particleSpeed = SPEED;
     particleColor = COLOR;
     particleSaturation < SATURATION
       ? (particleSaturation = SATURATION)
       : (particleSaturation -= SATURATION_STEP);
-    // maxDir = MAX_SPEED;
+    maxDir = MAX_SPEED;
   }
 
   //track mouse position
@@ -168,6 +168,7 @@ function applyForce(player, object) {
   //   radian = -radian;
   // }
   // console.log(Math.cos(radian));
+
   // Check For Collision
   // for (let i = 0; i < starArr.length; i++) {
   //   const object1 = starArr[i];
@@ -203,19 +204,15 @@ function applyForce(player, object) {
 // CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const x = getRandomArbitrary(initPadding, window.innerWidth - initPadding);
-    const y = getRandomArbitrary(initPadding, window.innerHeight - initPadding);
-    const randomSize = getRandomArbitrary(minStarSize, maxStarSize);
-
     starArr.push({
-      x: x,
-      y: y,
-      dirX: getRandomArbitrary(-1, 1),
-      dirY: getRandomArbitrary(-1, 1),
-      size: randomSize,
+      x: getRandomArbitrary(initPadding, window.innerWidth - initPadding),
+      y: getRandomArbitrary(initPadding, window.innerHeight - initPadding),
+      dirX: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
+      dirY: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
+      size: getRandomArbitrary(minStarSize, maxStarSize),
       h: getRandomArbitrary(160, 200),
-      s: particleSaturation,
-      l: 60,
+      s: getRandomArbitrary(80, 100),
+      l: getRandomArbitrary(50, 70),
       alpha: getRandomArbitrary(0.1, 1),
       isPulledIn: false,
       isPulledInRepeat: false,
@@ -226,11 +223,11 @@ function initParticles() {
 
 // CALCULATE PARTICLE SPEED
 function moveParticle(particle) {
-  //Set Particle Speed Limit
-  // if (particle.dirX < -maxDir) particle.dirX = -maxDir;
-  // if (particle.dirX > maxDir) particle.dirX = maxDir;
-  // if (particle.dirY < -maxDir) particle.dirY = -maxDir;
-  // if (particle.dirY > maxDir) particle.dirY = maxDir;
+  //Set Max Particle Speed Limit
+  if (particle.dirX < -maxDir) particle.dirX = -maxDir;
+  if (particle.dirX > maxDir) particle.dirX = maxDir;
+  if (particle.dirY < -maxDir) particle.dirY = -maxDir;
+  if (particle.dirY > maxDir) particle.dirY = maxDir;
 
   //Set Particle Speed
   particle.x += particle.dirX;
