@@ -1,16 +1,20 @@
 const body = document.getElementById('body');
+const homeContainer = document.getElementById('home-container');
+const [homeIntro, homeText, aboutText, projectsText, contactText] =
+  document.querySelectorAll('.text');
+const aboutContainer = document.getElementById('about-container');
+const projectsContainer = document.getElementById('projects-container');
+const contactContainer = document.getElementById('contact-container');
+const aboutLink = document.getElementById('about-link');
+const projectsLink = document.getElementById('projects-link');
+const contactLink = document.getElementById('contact-link');
+const logo = document.getElementById('logo');
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const canvasWidth = 1920;
 const canvasHeight = 1080;
-
-const page = {
-  currentPage: 1,
-  totalPages: 4,
-  waiting: false,
-  delay: 1000,
-};
 
 const STEPS = 2;
 const PARTICLE_COUNT = 50;
@@ -23,22 +27,29 @@ const SATURATION = 70;
 const MAX_SATURATION = 100;
 const BOUNCINESS = 100;
 
-let particleSpeed = SPEED;
-let particleColor = COLOR;
-let particleSaturation = SATURATION;
-let maxDir = MAX_SPEED;
 const minStarSize = 4;
 const maxStarSize = 20;
-let alphaAdjuster = 0.1;
 const maxJiggle = 0.1;
 const gravConstant = 2;
 const initMouseMass = maxStarSize * 200;
 const initPadding = maxStarSize * 5;
 const zonePadding = 50;
 
+let particleSpeed = SPEED;
+let particleColor = COLOR;
+let particleSaturation = SATURATION;
+let maxDir = MAX_SPEED;
+let alphaAdjuster = 0.1;
 let nameColorTimer = 0;
 
-const starArr = [];
+const particleArr = [];
+
+const page = {
+  currentPage: 1,
+  totalPages: 4,
+  waiting: false,
+  delay: 1200,
+};
 
 let mouse = {
   x: window.innerWidth / 2,
@@ -47,31 +58,32 @@ let mouse = {
 };
 
 initCanvas();
+changePage();
 //EVENT LISTENERS
-window.addEventListener('resize', resizeHandler);
-window.addEventListener('wheel', (e) => {
-  if (!page.waiting) {
-    if (e.wheelDeltaY < 0) {
-      if (page.currentPage >= page.totalPages) {
-        page.currentPage = 1;
-        console.log('+');
-      } else {
-        page.currentPage++;
-        console.log('++');
-      }
-      page.waiting = true;
-    } else if (page.currentPage >= page.totalPages) {
-      page.currentPage = 1;
-      console.log('-');
-      page.waiting = true;
-    } else {
-      page.currentPage++;
-      page.waiting = true;
-      console.log('--');
-    }
-    setTimeout(() => (page.waiting = false), page.delay);
-  }
+// Link Click Handlers
+logo.addEventListener('click', (e) => {
+  e.preventDefault();
+  page.currentPage = 1;
+  changePage();
 });
+aboutLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  page.currentPage = 2;
+  changePage();
+});
+projectsLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  page.currentPage = 3;
+  changePage();
+});
+contactLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  page.currentPage = 4;
+  changePage();
+});
+
+window.addEventListener('resize', resizeHandler);
+window.addEventListener('wheel', wheelHandler);
 window.addEventListener('mousedown', mousedownHandler);
 window.addEventListener('mouseup', mouseupHandler);
 window.addEventListener('touchstart', (e) => {
@@ -119,27 +131,18 @@ function app() {
     mouse.y = e.changedTouches[0].clientY;
   };
 
-  for (let i = 0; i < starArr.length; i++) {
-    // if (mouse.isMouseDown === true) {
-    applyForce(mouse, starArr[i]);
-
-    // } else {
-    //calculate paricle velocity during no force
-    //   particleSpeed = SPEED;
-    //   window.onmousemove = null;
-    //   window.ontouchmove = null;
-    //   starArr[i].dirX += getRandomArbitrary(-maxJiggle, maxJiggle);
-    //   starArr[i].dirY += getRandomArbitrary(-maxJiggle, maxJiggle);
-    // }
+  for (let i = 0; i < particleArr.length; i++) {
+    applyForce(mouse, particleArr[i]);
 
     // move particle
-    moveParticle(starArr[i]);
+    moveParticle(particleArr[i]);
+
     //Set screen behaviour - Wrap or Bounce
-    screenBounce(starArr[i]);
-    // screenWrap(starArr[i]);
+    screenBounce(particleArr[i]);
+    // screenWrap(particleArr[i]);
 
     //Draw to canvas
-    drawParticle(starArr[i]);
+    drawParticle(particleArr[i]);
   }
 }
 
@@ -169,33 +172,6 @@ function applyForce(player, object) {
   // }
   // console.log(Math.cos(radian));
 
-  // Check For Collision
-  // for (let i = 0; i < starArr.length; i++) {
-  //   const object1 = starArr[i];
-
-  //   if (
-  //     object != object1 &&
-  //     distBetweenPoints(object.x, object.y, object1.x, object1.y) <=
-  //       object.size + object1.size
-  //   ) {
-  //     radian = Math.atan2(object.x - object1.x, object.y - object1.y);
-  //     object.x += object1.size * Math.sin(radian);
-  //     object.y += object1.size * Math.cos(radian);
-  //     //  Apply Force
-  //     object.dirX +=
-  //       Math.sin(radian) *
-  //       particleSpeed *
-  //       BOUNCINESS *
-  //       (object1.size / object.size);
-  //     object.dirY +=
-  //       Math.cos(radian) *
-  //       particleSpeed *
-  //       BOUNCINESS *
-  //       (object1.size / object.size);
-  //   } else {
-  //     radian = Math.atan2(player.x - object.x, player.y - object.y);
-  //   }
-  // }
   //  Apply Force
   object.dirX += Math.sin(radian) * particleSpeed;
   object.dirY += Math.cos(radian) * particleSpeed;
@@ -204,7 +180,7 @@ function applyForce(player, object) {
 // CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    starArr.push({
+    particleArr.push({
       x: getRandomArbitrary(initPadding, window.innerWidth - initPadding),
       y: getRandomArbitrary(initPadding, window.innerHeight - initPadding),
       dirX: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
@@ -267,17 +243,29 @@ function screenWrap(item) {
   if (item.y > window.innerHeight) item.y = item.y - window.innerHeight;
 }
 function screenBounce(item) {
-  if (item.x + item.size >= window.innerWidth) item.dirX = -item.dirX;
-  if (item.x <= 0) item.dirX = -item.dirX;
-  if (item.y <= 0) item.dirY = -item.dirY;
-  if (item.y + item.size >= window.innerHeight) item.dirY = -item.dirY;
+  if (item.x + item.size >= window.innerWidth) {
+    item.x = window.innerWidth - item.size * getRandomArbitrary(1.2, 2.5);
+    item.dirX = -item.dirX;
+  }
+  if (item.x <= 0) {
+    item.x = item.size * getRandomArbitrary(1.2, 2.5);
+    item.dirX = -item.dirX;
+  }
+  if (item.y + item.size >= window.innerHeight) {
+    item.y = window.innerHeight - item.size * getRandomArbitrary(1.2, 2.5);
+    item.dirY = -item.dirY;
+  }
+  if (item.y <= 0) {
+    item.y = item.size * getRandomArbitrary(1.2, 2.5);
+    item.dirY = -item.dirY;
+  }
 }
 
 //HANDLERS METHODS
 function resizeHandler() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
-  starArr.forEach((particle) => drawParticle(particle));
+  particleArr.forEach((particle) => drawParticle(particle));
 }
 function mousedownHandler(e) {
   e.preventDefault();
@@ -289,30 +277,113 @@ function mouseupHandler(e) {
   e.preventDefault();
   mouse.isMouseDown = false;
 }
-
-function changePage(currentPage, totalPages, direction = 1, limit = 300) {
-  let waiting = false;
-  return function () {
-    if (!waiting) {
-      if (direction === 1) {
-        if (currentPage >= totalPages) {
-          currentPage = 1;
-          console.log('+');
-        } else {
-          currentPage++;
-          console.log('++');
-        }
-      } else if (currentPage >= totalPages) {
-        currentPage = 1;
-        console.log('-');
+function wheelHandler(e) {
+  if (!page.waiting) {
+    if (e.wheelDeltaY < 0) {
+      if (page.currentPage >= page.totalPages) {
+        page.currentPage = 1;
       } else {
-        currentPage++;
-        console.log('--');
+        page.currentPage++;
       }
-      waiting = true;
-      setTimeout(function () {
-        waiting = false;
-      }, limit);
+      particleArr.forEach(
+        (object) => (object.dirY += getRandomArbitrary(-200, 200))
+      );
+      page.waiting = true;
+    } else if (page.currentPage <= 1) {
+      page.currentPage = page.totalPages;
+      page.waiting = true;
+      particleArr.forEach(
+        (object) => (object.dirX += getRandomArbitrary(-200, 200))
+      );
+    } else {
+      page.currentPage--;
+      page.waiting = true;
+      particleArr.forEach(
+        (object) => (object.dirX += getRandomArbitrary(-200, 200))
+      );
     }
-  };
+    console.log(page.currentPage);
+    setTimeout(() => (page.waiting = false), page.delay);
+    changePage();
+  }
+}
+
+function changePage() {
+  switch (page.currentPage) {
+    case 1:
+      // Screen Transitions
+      homeContainer.style = 'transform: translateX(0%); opacity: 1;';
+      aboutContainer.style = 'transform: translateX(100%); opacity: 0;';
+      projectsContainer.style = 'transform: translateX(100%); opacity: 0;';
+      contactContainer.style = 'transform: translateY(100%); opacity: 0;';
+      // Link Transitions
+      aboutLink.classList.remove('active-link');
+      projectsLink.classList.remove('active-link');
+      contactLink.classList.remove('active-link');
+      logo.classList.remove('desaturate');
+      // Text Transitions
+      homeIntro.classList.remove('text');
+      homeText.classList.remove('text');
+      aboutText.classList.add('text');
+      projectsText.classList.add('text');
+      contactText.classList.add('text');
+      break;
+    case 2:
+      // Screen Transitions
+      homeContainer.style = 'transform: translateY(100%); opacity: 0;';
+      aboutContainer.style = 'transform: translateX(0%); opacity: 1;';
+      projectsContainer.style = 'transform: translateX(100%); opacity: 0;';
+      contactContainer.style = 'transform: translateX(100%); opacity: 0;';
+      // Link Transitions
+      aboutLink.classList.add('active-link');
+      projectsLink.classList.remove('active-link');
+      contactLink.classList.remove('active-link');
+      logo.classList.add('desaturate');
+      // Text Transitions
+      homeIntro.classList.add('text');
+      homeText.classList.add('text');
+      aboutText.classList.remove('text');
+      projectsText.classList.add('text');
+      contactText.classList.add('text');
+      break;
+    case 3:
+      // Screen Transitions
+      homeContainer.style = 'transform: translateX(100%); opacity: 0;';
+      aboutContainer.style = 'transform: translateY(100%); opacity: 0;';
+      projectsContainer.style = 'transform: translateX(0%); opacity: 1;';
+      contactContainer.style = 'transform: translateX(100%); opacity: 0;';
+      // Link Transitions
+      aboutLink.classList.remove('active-link');
+      projectsLink.classList.add('active-link');
+      contactLink.classList.remove('active-link');
+      logo.classList.add('desaturate');
+      // Text Transitions
+      homeIntro.classList.add('text');
+      homeText.classList.add('text');
+      aboutText.classList.add('text');
+      projectsText.classList.remove('text');
+      contactText.classList.add('text');
+      break;
+    case 4:
+      // Screen Transitions
+      homeContainer.style = 'transform: translateX(100%); opacity: 0;';
+      aboutContainer.style = 'transform: translateX(100%); opacity: 0;';
+      projectsContainer.style = 'transform: translateY(100%); opacity: 0;';
+      contactContainer.style = 'transform: translateX(0%); opacity: 1;';
+      // Link Transitions
+      aboutLink.classList.remove('active-link');
+      projectsLink.classList.remove('active-link');
+      contactLink.classList.add('active-link');
+      logo.classList.add('desaturate');
+      // Text Transitions
+      homeIntro.classList.add('text');
+      homeText.classList.add('text');
+      aboutText.classList.add('text');
+      projectsText.classList.add('text');
+      contactText.classList.remove('text');
+      break;
+
+    default:
+      break;
+  }
 }

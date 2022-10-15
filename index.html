@@ -20,40 +20,70 @@
       <div class="nav-icon linkedin"></div>
     </div>
     <nav class="nav-container">
-      <h1 class="logo"><span>L</span>N</h1>
+      <h1 class="logo" id="logo"><span>L</span>N</h1>
       <ul class="nav-menu">
         <li class="nav-text name-color">
-          <a class="nav-text-link">About Me</a>
+          <a class="nav-text-link" id="about-link">About Me</a>
         </li>
         <li class="nav-text name-color">
-          <a class="nav-text-link">Projects</a>
+          <a class="nav-text-link" id="projects-link">Projects</a>
+        </li>
+        <li class="nav-text name-color">
+          <a class="nav-text-link" id="contact-link">Contact</a>
         </li>
         <li class="nav-text name-color"><a class="nav-text-link">Resume</a></li>
-        <li class="nav-text name-color">
-          <a class="nav-text-link">Contact</a>
-        </li>
       </ul>
     </nav>
 
     <main class="main-container">
-      <section class="home-container">
-        <p class="home-intro">Hello, my name is</p>
-        <h1 class="home-name"><span>Luca</span>Novello</h1>
-        <p class="home-text">
-          I am a
-          <span class="home-link">Full Stack Developer</span> specializing in
-          <span class="home-link">web development</span>,
-          <span class="home-link">programming</span>, and
-          <span class="home-link">UX/UI design</span>. I love
-          <span class="home-link">solving problems</span> and
-          <span class="home-link" class="">building things</span>.
-        </p>
+      <section
+        class="home-container"
+        id="home-container"
+        style="transform: translateX(0%); opacity: 1"
+      >
+        <div class="home-wrapper">
+          <p class="home-text text">Hello, my name is</p>
+          <h1 class="home-title title"><span>Luca</span>Novello</h1>
+          <p class="home-text text" id="home-text">
+            I am a
+            <span class="home-link">Full Stack Developer</span> specializing in
+            <span class="home-link">web development</span>,
+            <span class="home-link">programming</span>, and
+            <span class="home-link">UX/UI design</span>. I love
+            <span class="home-link">solving problems</span> and
+            <span class="home-link" class="">building things</span>.
+          </p>
+        </div>
       </section>
-      <section class="about-container">
-        <p class="about-intro">These are some of my skills</p>
-        <h3 class="about-name">JavaScript</h3>
-        <h3 class="about-name">HTML</h3>
-        <h3 class="about-name">CSS</h3>
+      <section
+        class="about-container"
+        id="about-container"
+        style="transform: translateX(100%); opacity: 0"
+      >
+        <div class="about-wrapper">
+          <h1 class="about-title title">About Me</h1>
+          <p class="about-text text">this is about me</p>
+        </div>
+      </section>
+      <section
+        class="projects-container"
+        id="projects-container"
+        style="transform: translateX(100%); opacity: 0"
+      >
+        <div class="projects-wrapper">
+          <h1 class="projects-title title">Projects</h1>
+          <p class="projects-text text">this is the projects page</p>
+        </div>
+      </section>
+      <section
+        class="contact-container"
+        id="contact-container"
+        style="transform: translateY(100%); opacity: 0"
+      >
+        <div class="contact-wrapper">
+          <h1 class="contact-title title">Contact</h1>
+          <p class="contact-text text">this is the contact page</p>
+        </div>
       </section>
     </main>
     <script src="app.js"></script>

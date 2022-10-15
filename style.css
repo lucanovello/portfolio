@@ -5,6 +5,11 @@
   --name-color: hsl(45, 100%, 50%);
   --light-color: hsl(40, 90%, 55%);
   --text-color: hsl(190, 0%, 70%);
+  --anim-time-screen: 1.2s;
+  --anim-time-screen-delay: 1s;
+  --anim-time-title: 0.9s;
+  --anim-time-text: 1s;
+  --anim-time-icon: 0.2s;
 }
 
 /* FONTS */
@@ -38,7 +43,6 @@ canvas {
   position: fixed;
   z-index: -1;
   /* filter: blur(50px); */
-  transition: 0.3s ease;
 }
 
 /* SIDE CONTACT ICONS */
@@ -56,6 +60,7 @@ canvas {
   background: hsla(200, 0%, 50%, 0.1);
   border-radius: 0 10px 0 0;
   row-gap: 3vh;
+  z-index: 9999;
 }
 .nav-icon {
   width: 24px;
@@ -107,8 +112,8 @@ canvas {
   position: fixed;
   gap: 50px;
   cursor: pointer;
-  z-index: 999;
-  transition: 0.2s ease;
+  z-index: 9999;
+  transition: var(--anim-time-icon) ease;
 }
 .nav-container i {
   width: 100%;
@@ -129,18 +134,23 @@ canvas {
   color: var(--name-color);
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
   cursor: pointer;
-  transition: 1s ease;
+  transition: var(--anim-time-text) ease;
 }
 .logo:hover {
   text-shadow: 0 3px 2px rgba(0, 0, 0, 0.5);
   color: white;
+  filter: saturate(1);
 }
 .logo span {
   color: white;
-  transition: 1s ease;
+  transition: var(--anim-time-text) ease;
 }
 .logo:hover span {
   color: var(--light-color);
+}
+
+.desaturate {
+  filter: saturate(0);
 }
 
 .nav-menu {
@@ -151,7 +161,7 @@ canvas {
   justify-content: flex-end;
   align-items: center;
   column-gap: 15%;
-  position: absolute;
+  position: fixed;
   right: 0;
 }
 .nav-text {
@@ -174,7 +184,7 @@ canvas {
   color: var(--text-color);
   border-radius: 10px;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
-  transition: 0.2s ease;
+  transition: var(--anim-time-icon) ease;
 }
 .nav-text-link:hover {
   color: white;
@@ -187,10 +197,21 @@ canvas {
   height: 1px;
   margin-top: -2px;
   background-color: transparent;
-  transition: 0.3s ease-out;
+  transition: var(--anim-time-text) ease-out;
   z-index: -1;
 }
 .nav-text-link:hover::after {
+  width: 100%;
+  height: 1px;
+  background-color: var(--light-color);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.active-link {
+  color: white;
+  text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
+}
+.active-link::after {
   width: 100%;
   height: 1px;
   background-color: var(--light-color);
@@ -207,8 +228,24 @@ canvas {
   flex-direction: column;
   color: white;
 }
-.home-container {
-  width: 50%;
+
+.home-container,
+.about-container,
+.projects-container,
+.contact-container {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: var(--anim-time-screen) ease-in-out,
+    opacity var(--anim-time-text) ease-out;
+}
+
+.home-wrapper,
+.about-wrapper,
+.projects-wrapper,
+.contact-wrapper {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -217,50 +254,67 @@ canvas {
   cursor: default;
 }
 
-.home-intro {
+.home-text,
+.about-text,
+.projects-text,
+.contact-text {
   font-family: 'Poppins', sans-serif;
   font-size: calc(9px + 50%);
-  font-weight: 400;
+  font-weight: 300;
+  line-height: 1.6;
   text-align: left;
+  word-spacing: 1px;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   color: var(--text-color);
+  transform: perspective(500px) rotateX(0deg);
+  transition: var(--anim-time-text) ease var(--anim-time-screen-delay);
 }
-.home-name {
+.text {
+  transform: perspective(500px) rotateX(90deg);
+  opacity: 1;
+}
+
+/* Home Container -----------------------------------------*/
+.home-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-wrapper {
+  width: 50%;
+}
+
+.home-title {
   font-family: 'Poppins', sans-serif;
   font-size: calc(64px + 50%);
   font-weight: 900;
   text-transform: capitalize;
   letter-spacing: -4px;
   word-spacing: 5px;
-
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   color: var(--name-color);
 }
-.home-name > span {
+.home-title > span {
   color: white;
 }
 
 .home-text {
-  font-family: 'Poppins', sans-serif;
-  font-size: calc(9px + 50%);
-  font-weight: 300;
-  line-height: 1.6;
-  text-align: left;
-  justify-content: center;
-  word-spacing: 1px;
-  color: var(--text-color);
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
 }
 
 .home-link {
-  color: white;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   font-weight: 800;
-  cursor: pointer;
-  transition: 0.3s ease-out;
+  color: white;
   opacity: 0.7;
+  cursor: pointer;
+  transition: var(--anim-time-icon) ease-out;
 }
 .home-link:hover {
   opacity: 1;
@@ -272,7 +326,7 @@ canvas {
   height: 0.5px;
   margin-top: -5px;
   background-color: transparent;
-  transition: 0.3s ease-out;
+  transition: var(--anim-time-text) ease-out;
   z-index: -1;
 }
 .home-link:hover::after {
@@ -282,13 +336,54 @@ canvas {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
+/* About Container -----------------------------------------*/
 .about-container {
   width: 100%;
   height: 100%;
-  position: absolute;
-  top: 100%;
+}
+.about-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: calc(64px + 50%);
+  font-weight: 900;
+  text-transform: capitalize;
+  letter-spacing: -4px;
+  word-spacing: 5px;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  color: var(--name-color);
+}
+
+.projects-container {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+}
+.projects-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: calc(64px + 50%);
+  font-weight: 900;
+  text-transform: capitalize;
+  letter-spacing: -4px;
+  word-spacing: 5px;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  color: var(--name-color);
+}
+
+.contact-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.contact-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: calc(64px + 50%);
+  font-weight: 900;
+  text-transform: capitalize;
+  letter-spacing: -4px;
+  word-spacing: 5px;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  color: var(--name-color);
 }
