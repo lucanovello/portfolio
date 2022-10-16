@@ -2,6 +2,8 @@ const body = document.getElementById('body');
 const homeContainer = document.getElementById('home-container');
 const [homeIntro, homeText, aboutText, projectsText, contactText] =
   document.querySelectorAll('.text');
+const [aboutNavText, projectsNavText, contactNavText] =
+  document.querySelectorAll('.nav-text');
 const aboutContainer = document.getElementById('about-container');
 const projectsContainer = document.getElementById('projects-container');
 const contactContainer = document.getElementById('contact-container');
@@ -21,7 +23,7 @@ const PARTICLE_COUNT = 50;
 const SPEED = 0.04;
 const MAX_SPEED = SPEED * 70;
 const CLICK_SPEED = 3;
-const COLOR = 0.1;
+const COLOR = 0.5;
 const SATURATION_STEP = 0.2;
 const SATURATION = 70;
 const MAX_SATURATION = 100;
@@ -39,16 +41,30 @@ let particleSpeed = SPEED;
 let particleColor = COLOR;
 let particleSaturation = SATURATION;
 let maxDir = MAX_SPEED;
-let alphaAdjuster = 0.1;
+let alphaAdjuster = 0.7;
 let nameColorTimer = 0;
 
 const particleArr = [];
+const pagesArr = [
+  homeContainer,
+  aboutContainer,
+  projectsContainer,
+  contactContainer,
+];
 
 const page = {
   currentPage: 1,
+  prevPage: 1,
   totalPages: 4,
   waiting: false,
-  delay: 1200,
+  delay: 1600,
+  colors: {
+    pg1: 45,
+    pg2: 120,
+    pg3: 200,
+    pg4: 300,
+  },
+  particleColorDifference: 50,
 };
 
 let mouse = {
@@ -57,30 +73,53 @@ let mouse = {
   isMouseDown: false,
 };
 
-initCanvas();
-changePage();
-//EVENT LISTENERS
-// Link Click Handlers
+initPage();
+//  EVENT LISTENERS
+//  Link Click Handlers
 logo.addEventListener('click', (e) => {
   e.preventDefault();
-  page.currentPage = 1;
-  changePage();
+  if (page.currentPage != 1 && !page.waiting) {
+    page.prevPage = page.currentPage;
+    page.currentPage = 1;
+    changePage();
+    page.waiting = true;
+    setTimeout(() => (page.waiting = false), page.delay);
+  }
 });
 aboutLink.addEventListener('click', (e) => {
   e.preventDefault();
-  page.currentPage = 2;
-  changePage();
+  if (page.currentPage != 2 && !page.waiting) {
+    page.prevPage = page.currentPage;
+    page.currentPage = 2;
+    changePage();
+    page.waiting = true;
+    setTimeout(() => (page.waiting = false), page.delay);
+  }
 });
 projectsLink.addEventListener('click', (e) => {
   e.preventDefault();
-  page.currentPage = 3;
-  changePage();
+  if (page.currentPage != 3 && !page.waiting) {
+    page.prevPage = page.currentPage;
+    page.currentPage = 3;
+    changePage();
+    page.waiting = true;
+    setTimeout(() => (page.waiting = false), page.delay);
+  }
 });
 contactLink.addEventListener('click', (e) => {
   e.preventDefault();
-  page.currentPage = 4;
-  changePage();
+  if (page.currentPage != 4 && !page.waiting) {
+    page.prevPage = page.currentPage;
+    page.currentPage = 4;
+    changePage();
+    page.waiting = true;
+    setTimeout(() => (page.waiting = false), page.delay);
+  }
 });
+
+//  Body Drag Handler
+body.addEventListener('mousedown', bodyMousedownHandler);
+body.addEventListener('mouseup', bodyMouseupHandler);
 
 window.addEventListener('resize', resizeHandler);
 window.addEventListener('wheel', wheelHandler);
@@ -97,12 +136,12 @@ window.addEventListener('touchend', (e) => {
   mouse.y = e.changedTouches[0].clientY;
 });
 
-//APP ENGINE
+//  APP ENGINE
 const Engine = setInterval(() => app(), STEPS);
 
-//MAIN APP
+//  MAIN APP
 function app() {
-  //clear screen
+  //  Clear Screen every frame
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   if (mouse.isMouseDown === true) {
@@ -121,7 +160,7 @@ function app() {
     maxDir = MAX_SPEED;
   }
 
-  //track mouse position
+  //  Track mouse position
   window.onmousemove = (e) => {
     mouse.x = e.x;
     mouse.y = e.y;
@@ -134,30 +173,36 @@ function app() {
   for (let i = 0; i < particleArr.length; i++) {
     applyForce(mouse, particleArr[i]);
 
-    // move particle
+    //  Move Particle
     moveParticle(particleArr[i]);
 
-    //Set screen behaviour - Wrap or Bounce
+    //  Set screen behaviour - Wrap or Bounce
     screenBounce(particleArr[i]);
     // screenWrap(particleArr[i]);
 
-    //Draw to canvas
+    //  Draw to canvas
     drawParticle(particleArr[i]);
   }
 }
 
-//INITIALIZATION
+//  INITIALIZATION
+function initPage() {
+  homeIntro.classList.remove('text');
+  homeText.classList.remove('text');
+  initCanvas();
+}
+
 function initCanvas() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
   initParticles();
 }
 
-// CALCULATING "GRAVITATIONAL" FORCE
+//  CALCULATING "GRAVITATIONAL" FORCE
 function applyForce(player, object) {
   let radian = Math.atan2(player.x - object.x, player.y - object.y);
 
-  // Attraction For Screen Wrap
+  //  Attraction For Screen Wrap
   // if (
   //   Math.abs(player.x - object.x + window.innerWidth) <
   //     Math.abs(player.x - object.x) / 2 ||
@@ -170,14 +215,13 @@ function applyForce(player, object) {
   // ) {
   //   radian = -radian;
   // }
-  // console.log(Math.cos(radian));
 
   //  Apply Force
   object.dirX += Math.sin(radian) * particleSpeed;
   object.dirY += Math.cos(radian) * particleSpeed;
 }
 
-// CREATE PARTICLES
+//  CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     particleArr.push({
@@ -186,9 +230,9 @@ function initParticles() {
       dirX: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
       dirY: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
       size: getRandomArbitrary(minStarSize, maxStarSize),
-      h: getRandomArbitrary(160, 200),
+      h: getRandomArbitrary(40, 60),
       s: getRandomArbitrary(80, 100),
-      l: getRandomArbitrary(50, 70),
+      l: getRandomArbitrary(45, 75),
       alpha: getRandomArbitrary(0.1, 1),
       isPulledIn: false,
       isPulledInRepeat: false,
@@ -197,45 +241,44 @@ function initParticles() {
 }
 1;
 
-// CALCULATE PARTICLE SPEED
+//  CALCULATE PARTICLE SPEED
 function moveParticle(particle) {
-  //Set Max Particle Speed Limit
+  //  Set Max Particle Speed Limit
   if (particle.dirX < -maxDir) particle.dirX = -maxDir;
   if (particle.dirX > maxDir) particle.dirX = maxDir;
   if (particle.dirY < -maxDir) particle.dirY = -maxDir;
   if (particle.dirY > maxDir) particle.dirY = maxDir;
 
-  //Set Particle Speed
+  //  Set Particle Speed
   particle.x += particle.dirX;
   particle.y += particle.dirY;
 }
-
-// DRAW PARTICLES
+console.log(page.particleColorDifference);
+//  DRAW PARTICLES
 function drawParticle(particle) {
-  particle.h += particleColor;
+  particle.h >= page.particleColorDifference
+    ? (particle.h -= particleColor)
+    : (particle.h += particleColor);
+  particle.h > 360 && (particle.h = 0);
   ctx.beginPath();
   ctx.fillStyle = `hsla(${particle.h},${particleSaturation}%,${particle.l}%,${
     particle.alpha * alphaAdjuster
   })`;
-  //   ctx.strokeStyle = `hsla(${particle.h},${particle.s}%,${particle.l}%,${
-  //     particle.alpha * alphaAdjuster
-  //   })`;
   ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI, false);
   ctx.fill();
-  //   ctx.stroke();
   ctx.closePath();
 }
 
-// GET RANDOM NUMBER BETWEEN 2 VALUES
+//  GET RANDOM NUMBER BETWEEN 2 VALUES
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
-//FIND DISTANCE BETWEEN 2 POINTS//
+//  FIND DISTANCE BETWEEN 2 POINTS//
 function distBetweenPoints(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
-// SCREEN WRAP BEHAVIOUR
+//  SCREEN WRAP BEHAVIOUR
 function screenWrap(item) {
   if (item.x > window.innerWidth) item.x = item.x - window.innerWidth;
   if (item.x < 0) item.x = item.x + window.innerWidth;
@@ -261,7 +304,15 @@ function screenBounce(item) {
   }
 }
 
-//HANDLERS METHODS
+//  HANDLERS METHODS
+function bodyMousedownHandler(e) {
+  e.preventDefault();
+  body.classList.add('grabbing');
+}
+function bodyMouseupHandler(e) {
+  e.preventDefault();
+  body.classList.remove('grabbing');
+}
 function resizeHandler() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
@@ -279,6 +330,8 @@ function mouseupHandler(e) {
 }
 function wheelHandler(e) {
   if (!page.waiting) {
+    page.prevPage = page.currentPage;
+
     if (e.wheelDeltaY < 0) {
       if (page.currentPage >= page.totalPages) {
         page.currentPage = 1;
@@ -302,85 +355,207 @@ function wheelHandler(e) {
         (object) => (object.dirX += getRandomArbitrary(-200, 200))
       );
     }
-    console.log(page.currentPage);
-    setTimeout(() => (page.waiting = false), page.delay);
     changePage();
+    setTimeout(() => (page.waiting = false), page.delay);
+  }
+}
+//  Change Classes
+function changeClass(
+  elementsRemoveArr,
+  removeClassArr,
+  elementsAddArr,
+  addClass
+) {
+  elementsRemoveArr.forEach((element) => {
+    for (let i = 0; i < removeClassArr.length; i++) {
+      removeClassArr[i];
+      element.classList.remove(removeClassArr[i]);
+    }
+  });
+  if (elementsAddArr) {
+    elementsAddArr.forEach((element) => element.classList.add(addClass));
   }
 }
 
+//  Deactivate Pages
+function deactivatePage(prevPage, currentPage, exitStyle, deactivateStyle) {
+  prevPage.classList.add(exitStyle);
+  prevPage.ontransitionend = () => {
+    prevPage.classList.add(deactivateStyle);
+    prevPage.classList.remove(exitStyle);
+    console.log('yes');
+  };
+  currentPage.classList.remove(deactivateStyle);
+}
+
+//  Change Pages
 function changePage() {
   switch (page.currentPage) {
     case 1:
-      // Screen Transitions
-      homeContainer.style = 'transform: translateX(0%); opacity: 1;';
-      aboutContainer.style = 'transform: translateX(100%); opacity: 0;';
-      projectsContainer.style = 'transform: translateX(100%); opacity: 0;';
-      contactContainer.style = 'transform: translateY(100%); opacity: 0;';
-      // Link Transitions
-      aboutLink.classList.remove('active-link');
-      projectsLink.classList.remove('active-link');
-      contactLink.classList.remove('active-link');
-      logo.classList.remove('desaturate');
-      // Text Transitions
-      homeIntro.classList.remove('text');
-      homeText.classList.remove('text');
+      //  Screen Transitions
+      deactivatePage(
+        pagesArr[page.prevPage - 1],
+        homeContainer,
+        'page-exit',
+        'deactive'
+      );
+
+      //  Link Transitions
+      //  change active link
+      changeClass([aboutLink, projectsLink, contactLink], ['active-link']);
+      //  change active link underline color
+      changeClass(
+        [aboutLink, projectsLink, contactLink],
+        ['page1-bg', 'page2-bg', 'page3-bg', 'page4-bg']
+      );
+      //  change marker color
+      changeClass(
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        ['page2-color', 'page3-color', 'page4-color'],
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        'page1-color'
+      );
+      //  Text Transitions
+      homeContainer.ontransitionend = () => {
+        homeIntro.classList.remove('text');
+        homeText.classList.remove('text');
+      };
+
       aboutText.classList.add('text');
       projectsText.classList.add('text');
       contactText.classList.add('text');
+
+      //  Particle Effects
+      page.particleColorDifference = page.colors.pg1;
       break;
     case 2:
-      // Screen Transitions
-      homeContainer.style = 'transform: translateY(100%); opacity: 0;';
-      aboutContainer.style = 'transform: translateX(0%); opacity: 1;';
-      projectsContainer.style = 'transform: translateX(100%); opacity: 0;';
-      contactContainer.style = 'transform: translateX(100%); opacity: 0;';
-      // Link Transitions
-      aboutLink.classList.add('active-link');
-      projectsLink.classList.remove('active-link');
-      contactLink.classList.remove('active-link');
-      logo.classList.add('desaturate');
-      // Text Transitions
+      //  Screen Transitions
+      deactivatePage(
+        pagesArr[page.prevPage - 1],
+        aboutContainer,
+        'page-exit',
+        'deactive'
+      );
+
+      //  Link Transitions
+      //  change active link
+      changeClass(
+        [projectsLink, contactLink],
+        ['active-link'],
+        [aboutLink],
+        'active-link'
+      );
+      //  change active link underline color
+      changeClass(
+        [aboutLink, projectsLink, contactLink],
+        ['page1-bg', 'page3-bg', 'page4-bg'],
+        [aboutLink],
+        'page2-bg'
+      );
+      //  change marker color
+      changeClass(
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        ['page1-color', 'page3-color', 'page4-color'],
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        'page2-color'
+      );
+      //  Text Transitions
+      aboutContainer.ontransitionend = () => {
+        aboutText.classList.remove('text');
+      };
       homeIntro.classList.add('text');
       homeText.classList.add('text');
-      aboutText.classList.remove('text');
       projectsText.classList.add('text');
       contactText.classList.add('text');
+
+      //  Particle Effects
+      page.particleColorDifference = page.colors.pg2;
       break;
     case 3:
-      // Screen Transitions
-      homeContainer.style = 'transform: translateX(100%); opacity: 0;';
-      aboutContainer.style = 'transform: translateY(100%); opacity: 0;';
-      projectsContainer.style = 'transform: translateX(0%); opacity: 1;';
-      contactContainer.style = 'transform: translateX(100%); opacity: 0;';
-      // Link Transitions
-      aboutLink.classList.remove('active-link');
-      projectsLink.classList.add('active-link');
-      contactLink.classList.remove('active-link');
-      logo.classList.add('desaturate');
-      // Text Transitions
+      //  Screen Transitions
+      deactivatePage(
+        pagesArr[page.prevPage - 1],
+        projectsContainer,
+        'page-exit',
+        'deactive'
+      );
+
+      //  Link Transitions
+      //  change active link
+      changeClass(
+        [aboutLink, contactLink],
+        ['active-link'],
+        [projectsLink],
+        'active-link'
+      );
+      //  change active link underline color
+      changeClass(
+        [aboutLink, projectsLink, contactLink],
+        ['page1-bg', 'page2-bg', 'page4-bg'],
+        [projectsLink],
+        'page3-bg'
+      );
+      //  change marker color
+      changeClass(
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        ['page1-color', 'page2-color', 'page4-color'],
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        'page3-color'
+      );
+      //  Text Transitions
+      projectsContainer.ontransitionend = () => {
+        projectsText.classList.remove('text');
+      };
       homeIntro.classList.add('text');
       homeText.classList.add('text');
       aboutText.classList.add('text');
-      projectsText.classList.remove('text');
       contactText.classList.add('text');
+
+      //  Particle Effects
+      page.particleColorDifference = page.colors.pg3;
       break;
     case 4:
-      // Screen Transitions
-      homeContainer.style = 'transform: translateX(100%); opacity: 0;';
-      aboutContainer.style = 'transform: translateX(100%); opacity: 0;';
-      projectsContainer.style = 'transform: translateY(100%); opacity: 0;';
-      contactContainer.style = 'transform: translateX(0%); opacity: 1;';
-      // Link Transitions
-      aboutLink.classList.remove('active-link');
-      projectsLink.classList.remove('active-link');
-      contactLink.classList.add('active-link');
-      logo.classList.add('desaturate');
-      // Text Transitions
+      //  Screen Transitions
+      deactivatePage(
+        pagesArr[page.prevPage - 1],
+        contactContainer,
+        'page-exit',
+        'deactive'
+      );
+
+      //  Link Transitions
+      //  change active link
+      changeClass(
+        [aboutLink, projectsLink],
+        ['active-link'],
+        [contactLink],
+        'active-link'
+      );
+      //  change active link underline color
+      changeClass(
+        [aboutLink, projectsLink, contactLink],
+        ['page1-bg', 'page2-bg', 'page3-bg'],
+        [contactLink],
+        'page4-bg'
+      );
+      //  change marker color
+      changeClass(
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        ['page1-color', 'page2-color', 'page3-color'],
+        [logo, aboutNavText, projectsNavText, contactNavText],
+        'page4-color'
+      );
+      //  Text Transitions
+      contactContainer.ontransitionend = () => {
+        contactText.classList.remove('text');
+      };
       homeIntro.classList.add('text');
       homeText.classList.add('text');
       aboutText.classList.add('text');
       projectsText.classList.add('text');
-      contactText.classList.remove('text');
+
+      //  Particle Effects
+      page.particleColorDifference = page.colors.pg4;
       break;
 
     default:

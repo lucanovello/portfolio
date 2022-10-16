@@ -11,7 +11,7 @@
     ></script>
     <title>Luca Novello | Full Stack Developer</title>
   </head>
-  <body>
+  <body id="body">
     <canvas id="canvas"></canvas>
     <div class="contact-icons">
       <i class="fa-solid fa-envelope nav-icon envelope"></i>
@@ -22,25 +22,20 @@
     <nav class="nav-container">
       <h1 class="logo" id="logo"><span>L</span>N</h1>
       <ul class="nav-menu">
-        <li class="nav-text name-color">
+        <li class="nav-text">
           <a class="nav-text-link" id="about-link">About Me</a>
         </li>
-        <li class="nav-text name-color">
+        <li class="nav-text">
           <a class="nav-text-link" id="projects-link">Projects</a>
         </li>
-        <li class="nav-text name-color">
+        <li class="nav-text">
           <a class="nav-text-link" id="contact-link">Contact</a>
         </li>
-        <li class="nav-text name-color"><a class="nav-text-link">Resume</a></li>
       </ul>
     </nav>
 
     <main class="main-container">
-      <section
-        class="home-container"
-        id="home-container"
-        style="transform: translateX(0%); opacity: 1"
-      >
+      <section class="home-container" id="home-container">
         <div class="home-wrapper">
           <p class="home-text text">Hello, my name is</p>
           <h1 class="home-title title"><span>Luca</span>Novello</h1>
@@ -55,31 +50,19 @@
           </p>
         </div>
       </section>
-      <section
-        class="about-container"
-        id="about-container"
-        style="transform: translateX(100%); opacity: 0"
-      >
+      <section class="about-container deactive" id="about-container">
         <div class="about-wrapper">
           <h1 class="about-title title">About Me</h1>
           <p class="about-text text">this is about me</p>
         </div>
       </section>
-      <section
-        class="projects-container"
-        id="projects-container"
-        style="transform: translateX(100%); opacity: 0"
-      >
+      <section class="projects-container deactive" id="projects-container">
         <div class="projects-wrapper">
           <h1 class="projects-title title">Projects</h1>
           <p class="projects-text text">this is the projects page</p>
         </div>
       </section>
-      <section
-        class="contact-container"
-        id="contact-container"
-        style="transform: translateY(100%); opacity: 0"
-      >
+      <section class="contact-container deactive" id="contact-container">
         <div class="contact-wrapper">
           <h1 class="contact-title title">Contact</h1>
           <p class="contact-text text">this is the contact page</p>

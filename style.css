@@ -5,10 +5,15 @@
   --name-color: hsl(45, 100%, 50%);
   --light-color: hsl(40, 90%, 55%);
   --text-color: hsl(190, 0%, 70%);
+  --page1-color: hsl(45, 100%, 50%);
+  --page2-color: hsl(120, 60%, 45%);
+  --page3-color: hsl(200, 80%, 50%);
+  --page4-color: hsl(300, 80%, 45%);
   --anim-time-screen: 1.2s;
-  --anim-time-screen-delay: 1s;
+  --anim-time-screen-delay: 1.2s;
   --anim-time-title: 0.9s;
   --anim-time-text: 1s;
+  --anim-time-underline: 0.4s;
   --anim-time-icon: 0.2s;
 }
 
@@ -37,12 +42,18 @@ body {
   align-items: flex-start;
   flex-direction: column;
   font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.grabbing {
+  cursor: grabbing;
 }
 
 canvas {
   position: fixed;
   z-index: -1;
-  /* filter: blur(50px); */
+  /* filter: blur(10px); */
 }
 
 /* SIDE CONTACT ICONS */
@@ -111,7 +122,6 @@ canvas {
   align-items: center;
   position: fixed;
   gap: 50px;
-  cursor: pointer;
   z-index: 9999;
   transition: var(--anim-time-icon) ease;
 }
@@ -123,7 +133,6 @@ canvas {
 }
 .logo {
   width: 64px;
-  aspect-ratio: 1;
   margin-right: 5px;
   display: flex;
   justify-content: center;
@@ -185,6 +194,7 @@ canvas {
   border-radius: 10px;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
   transition: var(--anim-time-icon) ease;
+  cursor: pointer;
 }
 .nav-text-link:hover {
   color: white;
@@ -196,15 +206,9 @@ canvas {
   width: 0%;
   height: 1px;
   margin-top: -2px;
-  background-color: transparent;
-  transition: var(--anim-time-text) ease-out;
+  background: transparent;
+  transition: var(--anim-time-underline) ease-out;
   z-index: -1;
-}
-.nav-text-link:hover::after {
-  width: 100%;
-  height: 1px;
-  background-color: var(--light-color);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
 .active-link {
@@ -214,8 +218,49 @@ canvas {
 .active-link::after {
   width: 100%;
   height: 1px;
-  background-color: var(--light-color);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.page1-bg:hover::after {
+  background: var(--page1-color);
+}
+.page2-bg:hover::after {
+  background: var(--page2-color);
+}
+.page3-bg:hover::after {
+  background: var(--page3-color);
+}
+.page4-bg:hover::after {
+  background: var(--page4-color);
+}
+.page1-bg::after {
+  background: var(--page1-color);
+}
+.page2-bg::after {
+  background: var(--page2-color);
+}
+.page3-bg::after {
+  background: var(--page3-color);
+}
+.page4-bg::after {
+  background: var(--page4-color);
+}
+
+.page1-color {
+  color: var(--page1-color);
+  transition: var(--anim-time-text) ease;
+}
+.page2-color {
+  color: var(--page2-color);
+  transition: var(--anim-time-text) ease;
+}
+.page3-color {
+  color: var(--page3-color);
+  transition: var(--anim-time-text) ease;
+}
+.page4-color {
+  color: var(--page4-color);
+  transition: var(--anim-time-text) ease;
 }
 
 /* MAIN CONTAINER */
@@ -233,25 +278,29 @@ canvas {
 .about-container,
 .projects-container,
 .contact-container {
+  width: 100%;
+  height: 100%;
+  padding: 20vh 20%;
   position: fixed;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   flex-direction: column;
-  transition: var(--anim-time-screen) ease-in-out,
-    opacity var(--anim-time-text) ease-out;
+  transform: none;
+  transition: var(--anim-time-screen) ease-in-out;
 }
 
 .home-wrapper,
 .about-wrapper,
 .projects-wrapper,
 .contact-wrapper {
+  width: 100%;
+  /* margin: auto; */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
   text-align: left;
-  cursor: default;
 }
 
 .home-text,
@@ -259,7 +308,7 @@ canvas {
 .projects-text,
 .contact-text {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(9px + 50%);
+  font-size: calc(12px + 0.4vw);
   font-weight: 300;
   line-height: 1.6;
   text-align: left;
@@ -267,34 +316,38 @@ canvas {
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   color: var(--text-color);
   transform: perspective(500px) rotateX(0deg);
-  transition: var(--anim-time-text) ease var(--anim-time-screen-delay);
+  transition: var(--anim-time-text) ease;
 }
 .text {
   transform: perspective(500px) rotateX(90deg);
   opacity: 1;
 }
 
+.deactive {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: 0s !important;
+}
+.page-exit {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
 /* Home Container -----------------------------------------*/
 .home-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 .home-wrapper {
-  width: 50%;
 }
 
 .home-title {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(64px + 50%);
+  font-size: calc(36px + 3vw);
   font-weight: 900;
   text-transform: capitalize;
-  letter-spacing: -4px;
+  letter-spacing: -3px;
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-  color: var(--name-color);
+  color: var(--page1-color);
 }
 .home-title > span {
   color: white;
@@ -326,7 +379,7 @@ canvas {
   height: 0.5px;
   margin-top: -5px;
   background-color: transparent;
-  transition: var(--anim-time-text) ease-out;
+  transition: var(--anim-time-underline) ease-out;
   z-index: -1;
 }
 .home-link:hover::after {
@@ -338,8 +391,6 @@ canvas {
 
 /* About Container -----------------------------------------*/
 .about-container {
-  width: 100%;
-  height: 100%;
 }
 .about-title {
   font-family: 'Poppins', sans-serif;
@@ -349,15 +400,10 @@ canvas {
   letter-spacing: -4px;
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-  color: var(--name-color);
+  color: var(--page2-color);
 }
 
 .projects-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 .projects-title {
   font-family: 'Poppins', sans-serif;
@@ -367,15 +413,10 @@ canvas {
   letter-spacing: -4px;
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-  color: var(--name-color);
+  color: var(--page3-color);
 }
 
 .contact-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 .contact-title {
   font-family: 'Poppins', sans-serif;
@@ -385,5 +426,5 @@ canvas {
   letter-spacing: -4px;
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-  color: var(--name-color);
+  color: var(--page4-color);
 }
