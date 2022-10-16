@@ -131,15 +131,44 @@ canvas {
   text-align: center;
   align-self: center;
 }
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: var(--anim-time-underline) ease-out;
+}
+.logo-wrapper::after {
+  content: '';
+  width: 0px;
+  height: 2px;
+  margin-top: -2px;
+  background: transparent;
+  transition: var(--anim-time-underline) ease-out;
+}
+
+.active-logo-link {
+  color: white;
+  text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
+  transition: var(--anim-time-underline) ease-out;
+}
+.active-logo-link::after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  transition: var(--anim-time-underline) ease-out;
+}
+
 .logo {
-  width: 64px;
   margin-right: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Passion One', cursive;
-  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
   font-weight: 900;
+  letter-spacing: -2.5px;
   color: var(--name-color);
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
   cursor: pointer;
@@ -204,7 +233,7 @@ canvas {
 .nav-text-link::after {
   content: '';
   width: 0%;
-  height: 1px;
+  height: 2px;
   margin-top: -2px;
   background: transparent;
   transition: var(--anim-time-underline) ease-out;
@@ -216,8 +245,9 @@ canvas {
   text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
 }
 .active-link::after {
+  content: '';
   width: 100%;
-  height: 1px;
+  height: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
@@ -341,7 +371,7 @@ canvas {
 
 .home-title {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(36px + 3vw);
+  font-size: calc(38px + 2vw);
   font-weight: 900;
   text-transform: capitalize;
   letter-spacing: -3px;
@@ -394,7 +424,7 @@ canvas {
 }
 .about-title {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(64px + 50%);
+  font-size: calc(38px + 2vw);
   font-weight: 900;
   text-transform: capitalize;
   letter-spacing: -4px;
@@ -407,7 +437,7 @@ canvas {
 }
 .projects-title {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(64px + 50%);
+  font-size: calc(38px + 2vw);
   font-weight: 900;
   text-transform: capitalize;
   letter-spacing: -4px;
@@ -420,7 +450,7 @@ canvas {
 }
 .contact-title {
   font-family: 'Poppins', sans-serif;
-  font-size: calc(64px + 50%);
+  font-size: calc(38px + 2vw);
   font-weight: 900;
   text-transform: capitalize;
   letter-spacing: -4px;

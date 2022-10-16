@@ -10,7 +10,8 @@ const contactContainer = document.getElementById('contact-container');
 const aboutLink = document.getElementById('about-link');
 const projectsLink = document.getElementById('projects-link');
 const contactLink = document.getElementById('contact-link');
-const logo = document.getElementById('logo');
+const logo = document.getElementById('logo-wrapper');
+const logoN = document.getElementById('logo');
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -57,7 +58,8 @@ const page = {
   prevPage: 1,
   totalPages: 4,
   waiting: false,
-  delay: 1600,
+  screenDelay: 1600,
+  textDelay: 800,
   colors: {
     pg1: 45,
     pg2: 120,
@@ -73,7 +75,6 @@ let mouse = {
   isMouseDown: false,
 };
 
-initPage();
 //  EVENT LISTENERS
 //  Link Click Handlers
 logo.addEventListener('click', (e) => {
@@ -81,9 +82,9 @@ logo.addEventListener('click', (e) => {
   if (page.currentPage != 1 && !page.waiting) {
     page.prevPage = page.currentPage;
     page.currentPage = 1;
-    changePage();
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.delay);
+    setTimeout(() => (page.waiting = false), page.screenDelay);
+    changePage();
   }
 });
 aboutLink.addEventListener('click', (e) => {
@@ -91,9 +92,9 @@ aboutLink.addEventListener('click', (e) => {
   if (page.currentPage != 2 && !page.waiting) {
     page.prevPage = page.currentPage;
     page.currentPage = 2;
-    changePage();
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.delay);
+    setTimeout(() => (page.waiting = false), page.screenDelay);
+    changePage();
   }
 });
 projectsLink.addEventListener('click', (e) => {
@@ -101,9 +102,9 @@ projectsLink.addEventListener('click', (e) => {
   if (page.currentPage != 3 && !page.waiting) {
     page.prevPage = page.currentPage;
     page.currentPage = 3;
-    changePage();
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.delay);
+    setTimeout(() => (page.waiting = false), page.screenDelay);
+    changePage();
   }
 });
 contactLink.addEventListener('click', (e) => {
@@ -111,9 +112,9 @@ contactLink.addEventListener('click', (e) => {
   if (page.currentPage != 4 && !page.waiting) {
     page.prevPage = page.currentPage;
     page.currentPage = 4;
-    changePage();
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.delay);
+    setTimeout(() => (page.waiting = false), page.screenDelay);
+    changePage();
   }
 });
 
@@ -136,6 +137,8 @@ window.addEventListener('touchend', (e) => {
   mouse.y = e.changedTouches[0].clientY;
 });
 
+initPage();
+
 //  APP ENGINE
 const Engine = setInterval(() => app(), STEPS);
 
@@ -143,24 +146,21 @@ const Engine = setInterval(() => app(), STEPS);
 function app() {
   //  Clear Screen every frame
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
+  //  If mousedown, increase particle speed, saturation & max speed
   if (mouse.isMouseDown === true) {
     particleSpeed = SPEED * CLICK_SPEED;
-    particleColor = COLOR * CLICK_SPEED;
     particleSaturation > MAX_SATURATION
       ? (particleSaturation = MAX_SATURATION)
       : (particleSaturation += SATURATION_STEP);
     maxDir = MAX_SPEED * 1.3;
   } else {
     particleSpeed = SPEED;
-    particleColor = COLOR;
     particleSaturation < SATURATION
       ? (particleSaturation = SATURATION)
       : (particleSaturation -= SATURATION_STEP);
     maxDir = MAX_SPEED;
   }
-
-  //  Track mouse position
+  //  Track mouse/touch position
   window.onmousemove = (e) => {
     mouse.x = e.x;
     mouse.y = e.y;
@@ -169,7 +169,7 @@ function app() {
     mouse.x = e.changedTouches[0].clientX;
     mouse.y = e.changedTouches[0].clientY;
   };
-
+  //  Move and draw particles
   for (let i = 0; i < particleArr.length; i++) {
     applyForce(mouse, particleArr[i]);
 
@@ -191,36 +191,18 @@ function initPage() {
   homeText.classList.remove('text');
   initCanvas();
 }
-
 function initCanvas() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
   initParticles();
 }
-
 //  CALCULATING "GRAVITATIONAL" FORCE
 function applyForce(player, object) {
   let radian = Math.atan2(player.x - object.x, player.y - object.y);
-
-  //  Attraction For Screen Wrap
-  // if (
-  //   Math.abs(player.x - object.x + window.innerWidth) <
-  //     Math.abs(player.x - object.x) / 2 ||
-  //   Math.abs(player.x - object.x - window.innerWidth) <
-  //     Math.abs(player.x - object.x) / 2 ||
-  //   Math.abs(player.y - object.y + window.innerHeight) <
-  //     Math.abs(player.y - object.y) / 2 ||
-  //   Math.abs(player.y - object.y - window.innerHeight) <
-  //     Math.abs(player.y - object.y) / 2
-  // ) {
-  //   radian = -radian;
-  // }
-
   //  Apply Force
   object.dirX += Math.sin(radian) * particleSpeed;
   object.dirY += Math.cos(radian) * particleSpeed;
 }
-
 //  CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -239,8 +221,6 @@ function initParticles() {
     });
   }
 }
-1;
-
 //  CALCULATE PARTICLE SPEED
 function moveParticle(particle) {
   //  Set Max Particle Speed Limit
@@ -248,12 +228,11 @@ function moveParticle(particle) {
   if (particle.dirX > maxDir) particle.dirX = maxDir;
   if (particle.dirY < -maxDir) particle.dirY = -maxDir;
   if (particle.dirY > maxDir) particle.dirY = maxDir;
-
   //  Set Particle Speed
   particle.x += particle.dirX;
   particle.y += particle.dirY;
 }
-console.log(page.particleColorDifference);
+
 //  DRAW PARTICLES
 function drawParticle(particle) {
   particle.h >= page.particleColorDifference
@@ -268,7 +247,6 @@ function drawParticle(particle) {
   ctx.fill();
   ctx.closePath();
 }
-
 //  GET RANDOM NUMBER BETWEEN 2 VALUES
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
@@ -277,7 +255,6 @@ function getRandomArbitrary(min, max) {
 function distBetweenPoints(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
-
 //  SCREEN WRAP BEHAVIOUR
 function screenWrap(item) {
   if (item.x > window.innerWidth) item.x = item.x - window.innerWidth;
@@ -303,7 +280,6 @@ function screenBounce(item) {
     item.dirY = -item.dirY;
   }
 }
-
 //  HANDLERS METHODS
 function bodyMousedownHandler(e) {
   e.preventDefault();
@@ -356,7 +332,7 @@ function wheelHandler(e) {
       );
     }
     changePage();
-    setTimeout(() => (page.waiting = false), page.delay);
+    setTimeout(() => (page.waiting = false), page.screenDelay);
   }
 }
 //  Change Classes
@@ -380,11 +356,10 @@ function changeClass(
 //  Deactivate Pages
 function deactivatePage(prevPage, currentPage, exitStyle, deactivateStyle) {
   prevPage.classList.add(exitStyle);
-  prevPage.ontransitionend = () => {
+  setTimeout(() => {
     prevPage.classList.add(deactivateStyle);
     prevPage.classList.remove(exitStyle);
-    console.log('yes');
-  };
+  }, page.screenDelay);
   currentPage.classList.remove(deactivateStyle);
 }
 
@@ -399,32 +374,39 @@ function changePage() {
         'page-exit',
         'deactive'
       );
-
       //  Link Transitions
       //  change active link
-      changeClass([aboutLink, projectsLink, contactLink], ['active-link']);
+      logo.classList.remove('active-logo-link');
+      changeClass(
+        [aboutLink, projectsLink, contactLink],
+        ['active-link'],
+        [logo],
+        'active-logo-link'
+      );
       //  change active link underline color
       changeClass(
         [aboutLink, projectsLink, contactLink],
-        ['page1-bg', 'page2-bg', 'page3-bg', 'page4-bg']
+        ['page1-bg', 'page2-bg', 'page3-bg', 'page4-bg'],
+        [logo],
+        'page1-bg'
       );
       //  change marker color
       changeClass(
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         ['page2-color', 'page3-color', 'page4-color'],
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         'page1-color'
       );
       //  Text Transitions
-      homeContainer.ontransitionend = () => {
+
+      setTimeout(() => {
         homeIntro.classList.remove('text');
         homeText.classList.remove('text');
-      };
+      }, page.textDelay);
 
       aboutText.classList.add('text');
       projectsText.classList.add('text');
       contactText.classList.add('text');
-
       //  Particle Effects
       page.particleColorDifference = page.colors.pg1;
       break;
@@ -439,35 +421,36 @@ function changePage() {
 
       //  Link Transitions
       //  change active link
+      logo.classList.remove('active-logo-link');
       changeClass(
-        [projectsLink, contactLink],
+        [logo, projectsLink, contactLink],
         ['active-link'],
         [aboutLink],
         'active-link'
       );
       //  change active link underline color
       changeClass(
-        [aboutLink, projectsLink, contactLink],
+        [logo, aboutLink, projectsLink, contactLink],
         ['page1-bg', 'page3-bg', 'page4-bg'],
         [aboutLink],
         'page2-bg'
       );
       //  change marker color
       changeClass(
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         ['page1-color', 'page3-color', 'page4-color'],
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         'page2-color'
       );
       //  Text Transitions
-      aboutContainer.ontransitionend = () => {
+      setTimeout(() => {
         aboutText.classList.remove('text');
-      };
+      }, page.textDelay);
+
       homeIntro.classList.add('text');
       homeText.classList.add('text');
       projectsText.classList.add('text');
       contactText.classList.add('text');
-
       //  Particle Effects
       page.particleColorDifference = page.colors.pg2;
       break;
@@ -482,30 +465,32 @@ function changePage() {
 
       //  Link Transitions
       //  change active link
+      logo.classList.remove('active-logo-link');
       changeClass(
-        [aboutLink, contactLink],
+        [logo, aboutLink, contactLink],
         ['active-link'],
         [projectsLink],
         'active-link'
       );
       //  change active link underline color
       changeClass(
-        [aboutLink, projectsLink, contactLink],
+        [logo, aboutLink, projectsLink, contactLink],
         ['page1-bg', 'page2-bg', 'page4-bg'],
         [projectsLink],
         'page3-bg'
       );
       //  change marker color
       changeClass(
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         ['page1-color', 'page2-color', 'page4-color'],
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         'page3-color'
       );
       //  Text Transitions
-      projectsContainer.ontransitionend = () => {
+      setTimeout(() => {
         projectsText.classList.remove('text');
-      };
+      }, page.textDelay);
+
       homeIntro.classList.add('text');
       homeText.classList.add('text');
       aboutText.classList.add('text');
@@ -525,30 +510,32 @@ function changePage() {
 
       //  Link Transitions
       //  change active link
+      logo.classList.remove('active-logo-link');
       changeClass(
-        [aboutLink, projectsLink],
+        [logo, aboutLink, projectsLink],
         ['active-link'],
         [contactLink],
         'active-link'
       );
       //  change active link underline color
       changeClass(
-        [aboutLink, projectsLink, contactLink],
+        [logo, aboutLink, projectsLink, contactLink],
         ['page1-bg', 'page2-bg', 'page3-bg'],
         [contactLink],
         'page4-bg'
       );
       //  change marker color
       changeClass(
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         ['page1-color', 'page2-color', 'page3-color'],
-        [logo, aboutNavText, projectsNavText, contactNavText],
+        [logoN, aboutNavText, projectsNavText, contactNavText],
         'page4-color'
       );
       //  Text Transitions
-      contactContainer.ontransitionend = () => {
+      setTimeout(() => {
         contactText.classList.remove('text');
-      };
+      }, page.textDelay);
+
       homeIntro.classList.add('text');
       homeText.classList.add('text');
       aboutText.classList.add('text');
