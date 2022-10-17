@@ -12,6 +12,9 @@ const projectsLink = document.getElementById('projects-link');
 const contactLink = document.getElementById('contact-link');
 const logo = document.getElementById('logo-wrapper');
 const logoN = document.getElementById('logo');
+const introScreen = document.getElementById('intro-screen');
+const navContainerLoad = document.querySelector('.nav-container-load');
+const contactIconsLoad = document.querySelector('.contact-icons-load');
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -57,9 +60,14 @@ const page = {
   currentPage: 1,
   prevPage: 1,
   totalPages: 4,
-  waiting: false,
-  screenDelay: 1600,
-  textDelay: 800,
+  waiting: true,
+  introDelay: 2000,
+  screenDelay: 1100,
+  enterDelay: 200,
+  textDelay: 400,
+  iconDelay: 200,
+  navContainerLoadDelay: 1500,
+  contactIconsLoadDelay: 200,
   colors: {
     pg1: 45,
     pg2: 120,
@@ -189,6 +197,20 @@ function app() {
 function initPage() {
   homeIntro.classList.remove('text');
   homeText.classList.remove('text');
+  setTimeout(() => {
+    introScreen.classList.add('disappear');
+  }, page.introDelay);
+  setTimeout(() => {
+    introScreen.style.display = 'none';
+    page.waiting = false;
+  }, page.introDelay + 2000);
+  setTimeout(() => {
+    navContainerLoad.classList.remove('nav-container-load');
+  }, page.navContainerLoadDelay);
+  setTimeout(() => {
+    contactIconsLoad.classList.remove('contact-icons-load');
+  }, page.contactIconsLoadDelay);
+
   initCanvas();
 }
 function initCanvas() {
@@ -354,25 +376,50 @@ function changeClass(
 }
 
 //  Deactivate Pages
-function deactivatePage(prevPage, currentPage, exitStyle, deactivateStyle) {
-  prevPage.classList.add(exitStyle);
+function deactivatePage(currentPage, nextPage, exitStyle, enterStyle) {
+  console.log(enterStyle, exitStyle);
+  nextPage.style.transitionDuration = '0s';
+  nextPage.classList.add(enterStyle);
+  nextPage.classList.add(exitStyle);
+  nextPage.classList.remove(exitStyle);
+  currentPage.classList.add(exitStyle);
   setTimeout(() => {
-    prevPage.classList.add(deactivateStyle);
-    prevPage.classList.remove(exitStyle);
-  }, page.screenDelay);
-  currentPage.classList.remove(deactivateStyle);
+    nextPage.style.transitionDuration = '1s';
+    nextPage.classList.remove(enterStyle);
+  }, page.enterDelay);
 }
 
 //  Change Pages
 function changePage() {
+  let exitStyle;
+  let enterStyle;
+
+  if (page.prevPage < page.currentPage) {
+    if (page.prevPage == 1 && page.currentPage == page.totalPages) {
+      enterStyle = 'page-exit-bottom';
+      exitStyle = 'page-exit-right';
+    } else {
+      enterStyle = 'page-exit-right';
+      exitStyle = 'page-exit-bottom';
+    }
+  } else {
+    if (page.prevPage == page.totalPages && page.currentPage == 1) {
+      enterStyle = 'page-exit-right';
+      exitStyle = 'page-exit-bottom';
+    } else {
+      enterStyle = 'page-exit-bottom';
+      exitStyle = 'page-exit-right';
+    }
+  }
+
   switch (page.currentPage) {
     case 1:
       //  Screen Transitions
       deactivatePage(
         pagesArr[page.prevPage - 1],
         homeContainer,
-        'page-exit',
-        'deactive'
+        exitStyle,
+        enterStyle
       );
       //  Link Transitions
       //  change active link
@@ -415,8 +462,8 @@ function changePage() {
       deactivatePage(
         pagesArr[page.prevPage - 1],
         aboutContainer,
-        'page-exit',
-        'deactive'
+        exitStyle,
+        enterStyle
       );
 
       //  Link Transitions
@@ -459,8 +506,8 @@ function changePage() {
       deactivatePage(
         pagesArr[page.prevPage - 1],
         projectsContainer,
-        'page-exit',
-        'deactive'
+        exitStyle,
+        enterStyle
       );
 
       //  Link Transitions
@@ -504,8 +551,8 @@ function changePage() {
       deactivatePage(
         pagesArr[page.prevPage - 1],
         contactContainer,
-        'page-exit',
-        'deactive'
+        exitStyle,
+        enterStyle
       );
 
       //  Link Transitions

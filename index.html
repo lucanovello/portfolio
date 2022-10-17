@@ -13,13 +13,13 @@
   </head>
   <body id="body">
     <canvas id="canvas"></canvas>
-    <div class="contact-icons">
+    <div class="contact-icons contact-icons-load">
       <i class="fa-solid fa-envelope nav-icon envelope"></i>
       <div class="nav-icon github"></div>
       <div class="nav-icon codepen"></div>
       <div class="nav-icon linkedin"></div>
     </div>
-    <nav class="nav-container">
+    <nav class="nav-container nav-container-load">
       <div
         class="logo-wrapper active-logo-link page1-bg page1-color"
         id="logo-wrapper"
@@ -41,7 +41,11 @@
     </nav>
 
     <main class="main-container">
-      <section class="home-container" id="home-container">
+      <section
+        class="home-container"
+        id="home-container"
+        style="transition-duration: 1s"
+      >
         <div class="home-wrapper">
           <p class="home-text text">Hello, my name is</p>
           <h1 class="home-title title"><span>Luca</span>Novello</h1>
@@ -56,25 +60,30 @@
           </p>
         </div>
       </section>
-      <section class="about-container deactive" id="about-container">
+      <section class="about-container page-exit-right" id="about-container">
         <div class="about-wrapper">
           <h1 class="about-title title">About Me</h1>
           <p class="about-text text">this is about me</p>
         </div>
       </section>
-      <section class="projects-container deactive" id="projects-container">
+      <section
+        class="projects-container page-exit-right"
+        id="projects-container"
+      >
         <div class="projects-wrapper">
           <h1 class="projects-title title">Projects</h1>
           <p class="projects-text text">this is the projects page</p>
         </div>
       </section>
-      <section class="contact-container deactive" id="contact-container">
+      <section class="contact-container page-exit-right" id="contact-container">
         <div class="contact-wrapper">
           <h1 class="contact-title title">Contact</h1>
           <p class="contact-text text">this is the contact page</p>
         </div>
       </section>
     </main>
+
+    <div class="intro-screen" id="intro-screen"></div>
     <script src="app.js"></script>
   </body>
 </html>
