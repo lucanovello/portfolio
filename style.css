@@ -4,7 +4,7 @@
   --secondary-color: hsl(190, 1%, 95%);
   --name-color: hsl(45, 100%, 50%);
   --light-color: hsl(40, 90%, 55%);
-  --text-color: hsl(190, 0%, 70%);
+  --text-color: hsl(190, 0%, 65%);
   --page1-color: hsl(45, 100%, 50%);
   --page2-color: hsl(120, 60%, 45%);
   --page3-color: hsl(200, 80%, 50%);
@@ -14,6 +14,7 @@
   --anim-time-text: 1s;
   --anim-time-underline: 0.4s;
   --anim-time-icon: 0.2s;
+  --underline-weight: 1.2px;
 }
 
 /* FONTS */
@@ -52,6 +53,7 @@ body {
 canvas {
   position: fixed;
   z-index: -1;
+  background: var(--main-color);
   /* filter: blur(1px); */
 }
 
@@ -150,7 +152,6 @@ canvas {
   width: 100%;
   font-size: calc(1rem + 20%);
   text-align: center;
-  align-self: center;
 }
 .logo-wrapper {
   display: flex;
@@ -162,10 +163,38 @@ canvas {
 .logo-wrapper::after {
   content: '';
   width: 0px;
-  height: 2px;
-  margin-top: -2px;
+  height: var(--underline-weight);
+  margin-top: -8px;
   background: transparent;
   transition: var(--anim-time-underline) ease-out;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 300;
+  text-align: center;
+  color: var(--name-color);
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: var(--anim-time-text) ease;
+}
+
+.logo-span {
+  color: var(--text-color);
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0px;
+  transition: var(--anim-time-text) ease;
+}
+.logo:hover .logo-span {
+  color: white;
 }
 
 .active-logo-link {
@@ -175,43 +204,15 @@ canvas {
 }
 .active-logo-link::after {
   content: '';
-  width: 100%;
-  height: 2px;
+  width: 60%;
+  height: var(--underline-weight);
+  color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
   transition: var(--anim-time-underline) ease-out;
 }
-
-.logo {
-  margin-right: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.8rem;
-  font-weight: 900;
-  letter-spacing: -2.5px;
-  color: var(--name-color);
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  transition: var(--anim-time-text) ease;
-}
-.logo:hover {
-  text-shadow: 0 3px 2px rgba(0, 0, 0, 0.5);
+.active-logo-link .logo-span {
   color: white;
-  filter: saturate(1);
 }
-.logo span {
-  color: white;
-  transition: var(--anim-time-text) ease;
-}
-.logo:hover span {
-  color: var(--light-color);
-}
-
-.desaturate {
-  filter: saturate(0);
-}
-
 .nav-menu {
   width: 40%;
   height: 1px;
@@ -250,11 +251,10 @@ canvas {
   color: white;
   text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
 }
-
 .nav-text-link::after {
   content: '';
   width: 0%;
-  height: 2px;
+  height: var(--underline-weight);
   margin-top: -2px;
   background: transparent;
   transition: var(--anim-time-underline) ease-out;
@@ -268,7 +268,7 @@ canvas {
 .active-link::after {
   content: '';
   width: 100%;
-  height: 2px;
+  height: var(--underline-weight);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
@@ -284,6 +284,7 @@ canvas {
 .page4-bg:hover::after {
   background: var(--page4-color);
 }
+
 .page1-bg::after {
   background: var(--page1-color);
 }
@@ -339,7 +340,6 @@ canvas {
   flex-direction: column;
   transition-timing-function: ease-in-out;
 }
-
 .home-wrapper,
 .about-wrapper,
 .projects-wrapper,
@@ -352,7 +352,6 @@ canvas {
   flex-direction: column;
   text-align: left;
 }
-
 .home-text,
 .about-text,
 .projects-text,
@@ -368,11 +367,11 @@ canvas {
   transform: perspective(500px) rotateX(0deg);
   transition: var(--anim-time-text) ease;
 }
+
 .text {
   transform: perspective(500px) rotateX(90deg);
   opacity: 1;
 }
-
 .page-exit-right {
   transform: translateX(100%);
   opacity: 0;
@@ -383,11 +382,6 @@ canvas {
 }
 
 /* Home Container -----------------------------------------*/
-.home-container {
-}
-.home-wrapper {
-}
-
 .home-title {
   font-family: 'Poppins', sans-serif;
   font-size: calc(38px + 2vw);
@@ -401,12 +395,10 @@ canvas {
 .home-title > span {
   color: white;
 }
-
 .home-text {
   width: 100%;
   height: 100%;
 }
-
 .home-link {
   display: inline-flex;
   justify-content: center;
@@ -420,11 +412,10 @@ canvas {
 .home-link:hover {
   color: white;
 }
-
 .home-link::after {
   content: '';
   width: 0%;
-  height: 0.5px;
+  height: 1px;
   margin-top: -5px;
   background-color: transparent;
   transition: var(--anim-time-underline) ease-out;
@@ -433,13 +424,11 @@ canvas {
 .home-link:hover::after {
   width: 100%;
   height: 1px;
-  background-color: var(--light-color);
+  background-color: var(--page1-color);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
 /* About Container -----------------------------------------*/
-.about-container {
-}
 .about-title {
   font-family: 'Poppins', sans-serif;
   font-size: calc(38px + 2vw);
@@ -451,8 +440,53 @@ canvas {
   color: var(--page2-color);
 }
 
-.projects-container {
+.about-text span,
+.projects-text span,
+.contact-text span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-weight: 800;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: var(--anim-time-icon) ease-out;
 }
+.about-text span:hover,
+.projects-text span:hover,
+.contact-text span:hover {
+  color: white;
+}
+.about-text span::after,
+.projects-text span::after,
+.contact-text span::after {
+  content: '';
+  width: 0%;
+  height: 1px;
+  margin-top: -5px;
+  background-color: transparent;
+  transition: var(--anim-time-underline) ease-out;
+  z-index: -1;
+}
+.about-text span:hover::after,
+.projects-text span:hover::after,
+.contact-text span:hover::after {
+  width: 100%;
+  height: 1px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.about-text span:hover::after {
+  background-color: var(--page2-color);
+}
+.projects-text span:hover::after {
+  background-color: var(--page3-color);
+}
+.contact-text span:hover::after {
+  background-color: var(--page4-color);
+}
+
+/* Project Container -----------------------------------------*/
 .projects-title {
   font-family: 'Poppins', sans-serif;
   font-size: calc(38px + 2vw);
@@ -464,8 +498,7 @@ canvas {
   color: var(--page3-color);
 }
 
-.contact-container {
-}
+/* Contact Container -----------------------------------------*/
 .contact-title {
   font-family: 'Poppins', sans-serif;
   font-size: calc(38px + 2vw);
@@ -475,4 +508,34 @@ canvas {
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   color: var(--page4-color);
+}
+
+/*  Footer ---------------------------------------------------*/
+.footer-container {
+  width: 100%;
+  padding: 2vh 5%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  text-transform: capitalize;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  color: var(--text-color);
+  gap: 5px;
+}
+.footer-container a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.footer-text {
+  cursor: pointer;
+  transition: var(--anim-time-icon) ease;
+}
+.footer-text:hover {
+  color: white;
 }

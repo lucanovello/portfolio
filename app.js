@@ -45,7 +45,7 @@ let particleSpeed = SPEED;
 let particleColor = COLOR;
 let particleSaturation = SATURATION;
 let maxDir = MAX_SPEED;
-let alphaAdjuster = 0.7;
+let alphaAdjuster = 0.2;
 let nameColorTimer = 0;
 
 const particleArr = [];
@@ -66,7 +66,7 @@ const page = {
   enterDelay: 200,
   textDelay: 400,
   iconDelay: 200,
-  navContainerLoadDelay: 1500,
+  navContainerLoadDelay: 1000,
   contactIconsLoadDelay: 200,
   colors: {
     pg1: 45,
@@ -203,7 +203,7 @@ function initPage() {
   setTimeout(() => {
     introScreen.style.display = 'none';
     page.waiting = false;
-  }, page.introDelay + 2000);
+  }, page.introDelay + 600);
   setTimeout(() => {
     navContainerLoad.classList.remove('nav-container-load');
   }, page.navContainerLoadDelay);
@@ -377,7 +377,6 @@ function changeClass(
 
 //  Deactivate Pages
 function deactivatePage(currentPage, nextPage, exitStyle, enterStyle) {
-  console.log(enterStyle, exitStyle);
   nextPage.style.transitionDuration = '0s';
   nextPage.classList.add(enterStyle);
   nextPage.classList.add(exitStyle);

@@ -14,17 +14,27 @@
   <body id="body">
     <canvas id="canvas"></canvas>
     <div class="contact-icons contact-icons-load">
-      <i class="fa-solid fa-envelope nav-icon envelope"></i>
-      <div class="nav-icon github"></div>
-      <div class="nav-icon codepen"></div>
-      <div class="nav-icon linkedin"></div>
+      <a href="#" target="_blank"
+        ><i class="fa-solid fa-envelope nav-icon envelope"></i
+      ></a>
+      <a href="https://github.com/lunovello" target="_blank"
+        ><div class="nav-icon github"></div
+      ></a>
+      <a href="https://codepen.io/LucaNovello" target="_blank"
+        ><div class="nav-icon codepen"></div
+      ></a>
+      <a
+        href="https://www.linkedin.com/in/luca-novello-917a36234"
+        target="_blank"
+        ><div class="nav-icon linkedin"></div
+      ></a>
     </div>
     <nav class="nav-container nav-container-load">
       <div
         class="logo-wrapper active-logo-link page1-bg page1-color"
         id="logo-wrapper"
       >
-        <h1 class="logo" id="logo"><span>Luca</span>Novello</h1>
+        <h1 class="logo" id="logo">{<span class="logo-span">LN</span>}</h1>
       </div>
 
       <ul class="nav-menu">
@@ -63,7 +73,18 @@
       <section class="about-container page-exit-right" id="about-container">
         <div class="about-wrapper">
           <h1 class="about-title title">About Me</h1>
-          <p class="about-text text">this is about me</p>
+          <p class="about-text text">
+            Hey, my name is <span>Luca</span> and I am a
+            <span>Full Stack Developer</span> specializing in building
+            <span>websites</span> and <span>web applications</span>. I have
+            <span>experience</span> working with <span>React</span>,
+            <span>Angular</span>, <span>Nodejs</span>, <span>SQL</span>,
+            <span>MongoDB</span>, <span>JavaScript</span>, <span>CSS</span>,
+            <span>Git</span>, & <span>Adobe Creative Suite</span>. Before
+            <span>web development</span>, I worked in
+            <span>graphic design</span> as well as <span>finance</span> and
+            <span>mortgage lending</span>.
+          </p>
         </div>
       </section>
       <section
@@ -72,17 +93,36 @@
       >
         <div class="projects-wrapper">
           <h1 class="projects-title title">Projects</h1>
-          <p class="projects-text text">this is the projects page</p>
+          <p class="projects-text text">
+            this is the <span>Projects</span> page
+          </p>
         </div>
       </section>
       <section class="contact-container page-exit-right" id="contact-container">
         <div class="contact-wrapper">
           <h1 class="contact-title title">Contact</h1>
-          <p class="contact-text text">this is the contact page</p>
+          <p class="contact-text text">this is the <span>Contact</span> page</p>
         </div>
       </section>
     </main>
-
+    <footer class="footer-container">
+      <p>
+        &copy
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+      </p>
+      <p>|</p>
+      <a
+        href="https://www.canva.com/design/DAFLuzV-YzU/kuMGJKaBbj1hRJ8b4Wbe1w/view?utm_content=DAFLuzV-YzU&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink"
+        target="_blank"
+        ><p title="Click me to see Luca's resume" class="footer-text">
+          Luca Novello
+        </p></a
+      >
+      <p>|</p>
+      <p>FakeName Media Group</p>
+    </footer>
     <div class="intro-screen" id="intro-screen"></div>
     <script src="app.js"></script>
   </body>
