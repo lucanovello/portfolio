@@ -4,6 +4,7 @@ const [homeIntro, homeText, aboutText, projectsText, contactText] =
   document.querySelectorAll('.text');
 const [aboutNavText, projectsNavText, contactNavText] =
   document.querySelectorAll('.nav-text');
+const focusLinks = document.querySelectorAll('a');
 const aboutContainer = document.getElementById('about-container');
 const projectsContainer = document.getElementById('projects-container');
 const contactContainer = document.getElementById('contact-container');
@@ -21,7 +22,7 @@ const ctx = canvas.getContext('2d');
 
 const canvasWidth = 1920;
 const canvasHeight = 1080;
-
+console.log(focusLinks);
 const STEPS = 2;
 const PARTICLE_COUNT = 50;
 const SPEED = 0.04;
