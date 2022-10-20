@@ -1,5 +1,7 @@
 const body = document.getElementById('body');
 const homeContainer = document.getElementById('home-container');
+const [homeTitle, aboutTitle, projectsTitle, contactTitle] =
+  document.querySelectorAll('.title');
 const [homeIntro, homeText, aboutText, projectsText, contactText] =
   document.querySelectorAll('.text');
 const [aboutNavText, projectsNavText, contactNavText] =
@@ -20,34 +22,29 @@ const contactIconsLoad = document.querySelector('.contact-icons-load');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const canvasWidth = 1920;
-const canvasHeight = 1080;
-console.log(focusLinks);
-const STEPS = 2;
-const PARTICLE_COUNT = 50;
-const SPEED = 0.04;
-const MAX_SPEED = SPEED * 70;
-const CLICK_SPEED = 3;
-const COLOR = 0.5;
-const SATURATION_STEP = 0.2;
-const SATURATION = 70;
-const MAX_SATURATION = 100;
-const BOUNCINESS = 100;
+const canvasWidth = window.innerWidth;
+const canvasHeight = window.innerHeight;
 
-const minStarSize = 4;
-const maxStarSize = 20;
-const maxJiggle = 0.1;
-const gravConstant = 2;
-const initMouseMass = maxStarSize * 200;
-const initPadding = maxStarSize * 5;
-const zonePadding = 50;
+const STEPS = 5;
+const PARTICLE_COUNT = 20;
 
-let particleSpeed = SPEED;
-let particleColor = COLOR;
-let particleSaturation = SATURATION;
-let maxDir = MAX_SPEED;
-let alphaAdjuster = 0.2;
-let nameColorTimer = 0;
+const ACCELERATION = 0.4;
+const MAX_VELOCITY = ACCELERATION * 100;
+const ACC_CLICK = 2;
+const COLOR_STEP = 0.5;
+const BOUNCINESS = 1;
+const ALPHA_ADJUSTMENT = 0.2;
+
+const page1Hue = 45;
+const page2Hue = 100;
+const page3Hue = 200;
+const page4Hue = 260;
+
+const PARTICLE_MIN_RADIUS = 4;
+const PARTICLE_MAX_RADIUS = 20;
+const initPadding = PARTICLE_MAX_RADIUS * 2;
+
+let particleAcceleration = ACCELERATION;
 
 const particleArr = [];
 const pagesArr = [
@@ -62,23 +59,24 @@ const page = {
   prevPage: 1,
   totalPages: 4,
   waiting: true,
-  introDelay: 2000,
-  screenDelay: 1100,
+  introDelay: 1600,
+  screenEnterDelay: 500,
+  screenExitDelay: 1000,
   enterDelay: 200,
   textDelay: 400,
   iconDelay: 200,
   navContainerLoadDelay: 1000,
   contactIconsLoadDelay: 200,
   colors: {
-    pg1: 45,
-    pg2: 120,
-    pg3: 200,
-    pg4: 300,
+    pg1: page1Hue,
+    pg2: page2Hue,
+    pg3: page3Hue,
+    pg4: page4Hue,
   },
   particleColorDifference: 50,
 };
 
-let mouse = {
+const mouse = {
   x: window.innerWidth / 2,
   y: window.innerHeight / 2,
   isMouseDown: false,
@@ -92,7 +90,7 @@ logo.addEventListener('click', (e) => {
     page.prevPage = page.currentPage;
     page.currentPage = 1;
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.screenDelay);
+    setTimeout(() => (page.waiting = false), page.screenExitDelay);
     changePage();
   }
 });
@@ -102,7 +100,7 @@ aboutLink.addEventListener('click', (e) => {
     page.prevPage = page.currentPage;
     page.currentPage = 2;
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.screenDelay);
+    setTimeout(() => (page.waiting = false), page.screenExitDelay);
     changePage();
   }
 });
@@ -112,7 +110,7 @@ projectsLink.addEventListener('click', (e) => {
     page.prevPage = page.currentPage;
     page.currentPage = 3;
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.screenDelay);
+    setTimeout(() => (page.waiting = false), page.screenExitDelay);
     changePage();
   }
 });
@@ -122,17 +120,17 @@ contactLink.addEventListener('click', (e) => {
     page.prevPage = page.currentPage;
     page.currentPage = 4;
     page.waiting = true;
-    setTimeout(() => (page.waiting = false), page.screenDelay);
+    setTimeout(() => (page.waiting = false), page.screenExitDelay);
     changePage();
   }
 });
-
-//  Body Drag Handler
+//  Cursor Handlers
 body.addEventListener('mousedown', bodyMousedownHandler);
 body.addEventListener('mouseup', bodyMouseupHandler);
-
+//  Screen Handlers
 window.addEventListener('resize', resizeHandler);
 window.addEventListener('wheel', wheelHandler);
+//  Mouse/Touch Handlers
 window.addEventListener('mousedown', mousedownHandler);
 window.addEventListener('mouseup', mouseupHandler);
 window.addEventListener('touchstart', (e) => {
@@ -153,21 +151,16 @@ const Engine = setInterval(() => app(), STEPS);
 
 //  MAIN APP
 function app() {
-  //  Clear Screen every frame
+  //  Set canvas size
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+  //  Clear Screen
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   //  If mousedown, increase particle speed, saturation & max speed
   if (mouse.isMouseDown === true) {
-    particleSpeed = SPEED * CLICK_SPEED;
-    particleSaturation > MAX_SATURATION
-      ? (particleSaturation = MAX_SATURATION)
-      : (particleSaturation += SATURATION_STEP);
-    maxDir = MAX_SPEED * 1.3;
+    particleAcceleration = ACCELERATION * ACC_CLICK;
   } else {
-    particleSpeed = SPEED;
-    particleSaturation < SATURATION
-      ? (particleSaturation = SATURATION)
-      : (particleSaturation -= SATURATION_STEP);
-    maxDir = MAX_SPEED;
+    particleAcceleration = ACCELERATION;
   }
   //  Track mouse/touch position
   window.onmousemove = (e) => {
@@ -178,22 +171,16 @@ function app() {
     mouse.x = e.changedTouches[0].clientX;
     mouse.y = e.changedTouches[0].clientY;
   };
-  //  Move and draw particles
+  //  Move particles
   for (let i = 0; i < particleArr.length; i++) {
     applyForce(mouse, particleArr[i]);
-
-    //  Move Particle
-    moveParticle(particleArr[i]);
-
     //  Set screen behaviour - Wrap or Bounce
     screenBounce(particleArr[i]);
     // screenWrap(particleArr[i]);
-
     //  Draw to canvas
     drawParticle(particleArr[i]);
   }
 }
-
 //  INITIALIZATION
 function initPage() {
   homeIntro.classList.remove('text');
@@ -204,14 +191,13 @@ function initPage() {
   setTimeout(() => {
     introScreen.style.display = 'none';
     page.waiting = false;
-  }, page.introDelay + 600);
+  }, page.introDelay + 1200);
   setTimeout(() => {
     navContainerLoad.classList.remove('nav-container-load');
   }, page.navContainerLoadDelay);
   setTimeout(() => {
     contactIconsLoad.classList.remove('contact-icons-load');
   }, page.contactIconsLoadDelay);
-
   initCanvas();
 }
 function initCanvas() {
@@ -219,57 +205,81 @@ function initCanvas() {
   ctx.canvas.height = window.innerHeight;
   initParticles();
 }
+
 //  CALCULATING "GRAVITATIONAL" FORCE
 function applyForce(player, object) {
   let radian = Math.atan2(player.x - object.x, player.y - object.y);
   //  Apply Force
-  object.dirX += Math.sin(radian) * particleSpeed;
-  object.dirY += Math.cos(radian) * particleSpeed;
+  // console.log(player);
+  if (object.velocity.x >= MAX_VELOCITY) {
+    object.velocity.x = MAX_VELOCITY;
+  } else {
+    object.velocity.x += Math.sin(radian) * particleAcceleration;
+  }
+  if (object.velocity.x <= -MAX_VELOCITY) {
+    object.velocity.x = -MAX_VELOCITY;
+  } else {
+    object.velocity.x += Math.sin(radian) * particleAcceleration;
+  }
+  if (object.velocity.y >= MAX_VELOCITY) {
+    object.velocity.y = MAX_VELOCITY;
+  } else {
+    object.velocity.y += Math.cos(radian) * particleAcceleration;
+  }
+  if (object.velocity.y <= -MAX_VELOCITY) {
+    object.velocity.y = -MAX_VELOCITY;
+  } else {
+    object.velocity.y += Math.cos(radian) * particleAcceleration;
+  }
+
+  object.x += object.velocity.x - object.velocity.x * 0.9;
+  object.y += object.velocity.y - object.velocity.y * 0.9;
 }
+
 //  CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     particleArr.push({
       x: getRandomArbitrary(initPadding, window.innerWidth - initPadding),
       y: getRandomArbitrary(initPadding, window.innerHeight - initPadding),
-      dirX: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
-      dirY: getRandomArbitrary(-MAX_SPEED, MAX_SPEED),
-      size: getRandomArbitrary(minStarSize, maxStarSize),
-      h: getRandomArbitrary(40, 60),
-      s: getRandomArbitrary(80, 100),
-      l: getRandomArbitrary(45, 75),
-      alpha: getRandomArbitrary(0.1, 1),
+      velocity: {
+        x: getRandomArbitrary(-MAX_VELOCITY, MAX_VELOCITY),
+        y: getRandomArbitrary(-MAX_VELOCITY, MAX_VELOCITY),
+      },
+      radius: getRandomArbitrary(PARTICLE_MIN_RADIUS, PARTICLE_MAX_RADIUS),
+      fill: {
+        h: getRandomArbitrary(40, 60),
+        s: getRandomArbitrary(80, 100),
+        l: getRandomArbitrary(45, 75),
+        a: getRandomArbitrary(0.5, 1),
+      },
       isPulledIn: false,
       isPulledInRepeat: false,
     });
   }
 }
-//  CALCULATE PARTICLE SPEED
-function moveParticle(particle) {
-  //  Set Max Particle Speed Limit
-  if (particle.dirX < -maxDir) particle.dirX = -maxDir;
-  if (particle.dirX > maxDir) particle.dirX = maxDir;
-  if (particle.dirY < -maxDir) particle.dirY = -maxDir;
-  if (particle.dirY > maxDir) particle.dirY = maxDir;
-  //  Set Particle Speed
-  particle.x += particle.dirX;
-  particle.y += particle.dirY;
-}
 
 //  DRAW PARTICLES
 function drawParticle(particle) {
-  particle.h >= page.particleColorDifference
-    ? (particle.h -= particleColor)
-    : (particle.h += particleColor);
-  particle.h > 360 && (particle.h = 0);
+  particle.fill.h >= page.particleColorDifference
+    ? (particle.fill.h -= COLOR_STEP)
+    : (particle.fill.h += COLOR_STEP);
+  particle.fill.h > 360 && (particle.fill.h = 0);
   ctx.beginPath();
-  ctx.fillStyle = `hsla(${particle.h},${particleSaturation}%,${particle.l}%,${
-    particle.alpha * alphaAdjuster
-  })`;
-  ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI, false);
+  // ctx.shadowColor = `hsla(${particle.fill.h}, ${particleSaturation}%, ${
+  //   particle.fill.l
+  // }%,${particle.fill.a * ALPHA_ADJUSTMENT})`;
+  // ctx.shadowBlur = 40;
+  // ctx.shadowOffsetX = 0;
+  // ctx.shadowOffsetY = 0;
+  ctx.fillStyle = `hsla(${particle.fill.h},${particle.fill.s}%,${
+    particle.fill.l
+  }%,${particle.fill.a * ALPHA_ADJUSTMENT})`;
+  ctx.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI, false);
   ctx.fill();
   ctx.closePath();
 }
+
 //  GET RANDOM NUMBER BETWEEN 2 VALUES
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
@@ -286,24 +296,29 @@ function screenWrap(item) {
   if (item.y > window.innerHeight) item.y = item.y - window.innerHeight;
 }
 function screenBounce(item) {
-  if (item.x + item.size >= window.innerWidth) {
-    item.x = window.innerWidth - item.size * getRandomArbitrary(1.2, 2.5);
-    item.dirX = -item.dirX;
+  if (item.x + item.radius >= window.innerWidth) {
+    item.x = window.innerWidth - item.radius * 1.1;
+    item.velocity.x = -item.velocity.x * BOUNCINESS;
   }
-  if (item.x <= 0) {
-    item.x = item.size * getRandomArbitrary(1.2, 2.5);
-    item.dirX = -item.dirX;
+  if (item.x <= item.radius) {
+    item.x = item.radius;
+    item.velocity.x = -item.velocity.x * BOUNCINESS;
   }
-  if (item.y + item.size >= window.innerHeight) {
-    item.y = window.innerHeight - item.size * getRandomArbitrary(1.2, 2.5);
-    item.dirY = -item.dirY;
+  if (item.y + item.radius >= window.innerHeight) {
+    item.y = window.innerHeight - item.radius * 1.1;
+    item.velocity.y = -item.velocity.y * BOUNCINESS;
   }
-  if (item.y <= 0) {
-    item.y = item.size * getRandomArbitrary(1.2, 2.5);
-    item.dirY = -item.dirY;
+  if (item.y <= item.radius) {
+    item.y = item.radius;
+    item.velocity.y = -item.velocity.y * BOUNCINESS;
   }
 }
 //  HANDLERS METHODS
+function resizeHandler() {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+  particleArr.forEach((particle) => drawParticle(particle));
+}
 function bodyMousedownHandler(e) {
   e.preventDefault();
   body.classList.add('grabbing');
@@ -311,11 +326,6 @@ function bodyMousedownHandler(e) {
 function bodyMouseupHandler(e) {
   e.preventDefault();
   body.classList.remove('grabbing');
-}
-function resizeHandler() {
-  ctx.canvas.width = window.innerWidth;
-  ctx.canvas.height = window.innerHeight;
-  particleArr.forEach((particle) => drawParticle(particle));
 }
 function mousedownHandler(e) {
   e.preventDefault();
@@ -338,24 +348,24 @@ function wheelHandler(e) {
         page.currentPage++;
       }
       particleArr.forEach(
-        (object) => (object.dirY += getRandomArbitrary(-200, 200))
+        (object) => (object.velocity.y += getRandomArbitrary(-200, 200))
       );
       page.waiting = true;
     } else if (page.currentPage <= 1) {
       page.currentPage = page.totalPages;
       page.waiting = true;
       particleArr.forEach(
-        (object) => (object.dirX += getRandomArbitrary(-200, 200))
+        (object) => (object.velocity.x += getRandomArbitrary(-200, 200))
       );
     } else {
       page.currentPage--;
       page.waiting = true;
       particleArr.forEach(
-        (object) => (object.dirX += getRandomArbitrary(-200, 200))
+        (object) => (object.velocity.x += getRandomArbitrary(-200, 200))
       );
     }
     changePage();
-    setTimeout(() => (page.waiting = false), page.screenDelay);
+    setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
   }
 }
 //  Change Classes
@@ -376,24 +386,25 @@ function changeClass(
   }
 }
 
-//  Deactivate Pages
+//  Deactivate Pages   ------------------------------------------------------------------------------------------
 function deactivatePage(currentPage, nextPage, exitStyle, enterStyle) {
-  nextPage.style.transitionDuration = '0s';
+  currentPage.style.transition = `${page.screenExitDelay}ms ease-in-out, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
+  nextPage.style.transition = `0s, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
   nextPage.classList.add(enterStyle);
   nextPage.classList.add(exitStyle);
   nextPage.classList.remove(exitStyle);
   currentPage.classList.add(exitStyle);
   setTimeout(() => {
-    nextPage.style.transitionDuration = '1s';
+    nextPage.style.transition = `${page.screenExitDelay}ms ease-in-out, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
     nextPage.classList.remove(enterStyle);
-  }, page.enterDelay);
+    nextPage.style.transition = `${page.screenExitDelay}ms ease-in-out, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
+  }, 100);
 }
 
 //  Change Pages
 function changePage() {
   let exitStyle;
   let enterStyle;
-
   if (page.prevPage < page.currentPage) {
     if (page.prevPage == 1 && page.currentPage == page.totalPages) {
       enterStyle = 'page-exit-bottom';
@@ -447,9 +458,14 @@ function changePage() {
       //  Text Transitions
 
       setTimeout(() => {
+        homeTitle.classList.remove('text2');
         homeIntro.classList.remove('text');
         homeText.classList.remove('text');
       }, page.textDelay);
+
+      aboutTitle.classList.add('text2');
+      projectsTitle.classList.add('text2');
+      contactTitle.classList.add('text2');
 
       aboutText.classList.add('text');
       projectsText.classList.add('text');
@@ -491,8 +507,13 @@ function changePage() {
       );
       //  Text Transitions
       setTimeout(() => {
+        aboutTitle.classList.remove('text2');
         aboutText.classList.remove('text');
       }, page.textDelay);
+
+      homeTitle.classList.add('text2');
+      projectsTitle.classList.add('text2');
+      contactTitle.classList.add('text2');
 
       homeIntro.classList.add('text');
       homeText.classList.add('text');
@@ -535,8 +556,13 @@ function changePage() {
       );
       //  Text Transitions
       setTimeout(() => {
+        projectsTitle.classList.remove('text2');
         projectsText.classList.remove('text');
       }, page.textDelay);
+
+      homeTitle.classList.add('text2');
+      aboutTitle.classList.add('text2');
+      contactTitle.classList.add('text2');
 
       homeIntro.classList.add('text');
       homeText.classList.add('text');
@@ -580,8 +606,13 @@ function changePage() {
       );
       //  Text Transitions
       setTimeout(() => {
+        contactTitle.classList.remove('text2');
         contactText.classList.remove('text');
       }, page.textDelay);
+
+      homeTitle.classList.add('text2');
+      aboutTitle.classList.add('text2');
+      projectsTitle.classList.add('text2');
 
       homeIntro.classList.add('text');
       homeText.classList.add('text');
