@@ -6,6 +6,13 @@ const [homeIntro, homeText, aboutText, projectsText, contactText] =
   document.querySelectorAll('.text');
 const [aboutNavText, projectsNavText, contactNavText] =
   document.querySelectorAll('.nav-text');
+const [skyline1, skyline2, skyline3] = document.querySelectorAll('#skyline');
+const skylineWrapper = document.getElementById('skyline-wrapper');
+const skylineLights = document.getElementById('skyline-lights-wrapper');
+const skylineLightsColor = document.getElementById('skyline-lights');
+const clouds = document.getElementById('clouds');
+const [clouds1, clouds2, clouds3, clouds4] =
+  document.querySelectorAll('#cloud');
 const focusLinks = document.querySelectorAll('a');
 const aboutContainer = document.getElementById('about-container');
 const projectsContainer = document.getElementById('projects-container');
@@ -19,29 +26,37 @@ const introScreen = document.getElementById('intro-screen');
 const navContainerLoad = document.querySelector('.nav-container-load');
 const contactIconsLoad = document.querySelector('.contact-icons-load');
 
+const mousePos = document.querySelector('#mouse-pos');
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const canvasWidth = window.innerWidth;
-const canvasHeight = window.innerHeight;
+const CLOUD_COUNT = 15;
+const SKYLINE_1 = 25;
+const SKYLINE_2 = 10;
+const SKYLINE_3 = 3;
+let SKYLINE_1_STEP = -18;
+let SKYLINE_2_STEP = -6;
+let SKYLINE_3_STEP = -1.5;
+const LIGHT_SIZE = 5;
 
 const STEPS = 5;
-const PARTICLE_COUNT = 20;
+const PARTICLE_COUNT = 100;
 
-const ACCELERATION = 0.4;
-const MAX_VELOCITY = ACCELERATION * 100;
+const ACCELERATION = 0.04;
+const MAX_VELOCITY = ACCELERATION * 80;
 const ACC_CLICK = 2;
+const PARTICLE_MIN_RADIUS = 1;
+const PARTICLE_MAX_RADIUS = 10;
 const COLOR_STEP = 0.5;
+const ALPHA_ADJUSTMENT = 0.1;
 const BOUNCINESS = 1;
-const ALPHA_ADJUSTMENT = 0.2;
 
 const page1Hue = 45;
 const page2Hue = 100;
 const page3Hue = 200;
-const page4Hue = 260;
+const page4Hue = 0;
 
-const PARTICLE_MIN_RADIUS = 4;
-const PARTICLE_MAX_RADIUS = 20;
 const initPadding = PARTICLE_MAX_RADIUS * 2;
 
 let particleAcceleration = ACCELERATION;
@@ -59,13 +74,13 @@ const page = {
   prevPage: 1,
   totalPages: 4,
   waiting: true,
-  introDelay: 1600,
+  introDelay: 1400,
   screenEnterDelay: 500,
   screenExitDelay: 1000,
   enterDelay: 200,
   textDelay: 400,
   iconDelay: 200,
-  navContainerLoadDelay: 1000,
+  navContainerLoadDelay: 200,
   contactIconsLoadDelay: 200,
   colors: {
     pg1: page1Hue,
@@ -81,6 +96,7 @@ const mouse = {
   y: window.innerHeight / 2,
   isMouseDown: false,
 };
+let cloudsArr = [];
 
 //  EVENT LISTENERS
 //  Link Click Handlers
@@ -147,7 +163,8 @@ window.addEventListener('touchend', (e) => {
 initPage();
 
 //  APP ENGINE
-const Engine = setInterval(() => app(), STEPS);
+// const engine = setInterval(() => app(), STEPS);
+// const mouseEngine = setInterval(() => app(), STEPS);
 
 //  MAIN APP
 function app() {
@@ -155,7 +172,7 @@ function app() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
   //  Clear Screen
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   //  If mousedown, increase particle speed, saturation & max speed
   if (mouse.isMouseDown === true) {
     particleAcceleration = ACCELERATION * ACC_CLICK;
@@ -198,17 +215,26 @@ function initPage() {
   setTimeout(() => {
     contactIconsLoad.classList.remove('contact-icons-load');
   }, page.contactIconsLoadDelay);
-  initCanvas();
+
+  initClouds(CLOUD_COUNT);
+  skyline1.style.transition = '0s linear';
+  skyline2.style.transition = '0s linear';
+  skyline3.style.transition = '0s linear';
+  skylineLights.style.transition = '0s linear';
+
+  moveSkyline();
+  // initCanvas();
 }
+
 function initCanvas() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
-  initParticles();
-}
 
+  // initParticles();
+}
 //  CALCULATING "GRAVITATIONAL" FORCE
 function applyForce(player, object) {
-  let radian = Math.atan2(player.x - object.x, player.y - object.y);
+  const radian = Math.atan2(player.x - object.x, player.y - object.y);
   //  Apply Force
   // console.log(player);
   if (object.velocity.x >= MAX_VELOCITY) {
@@ -232,10 +258,9 @@ function applyForce(player, object) {
     object.velocity.y += Math.cos(radian) * particleAcceleration;
   }
 
-  object.x += object.velocity.x - object.velocity.x * 0.9;
-  object.y += object.velocity.y - object.velocity.y * 0.9;
+  object.x += object.velocity.x;
+  object.y += object.velocity.y;
 }
-
 //  CREATE PARTICLES
 function initParticles() {
   for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -250,15 +275,14 @@ function initParticles() {
       fill: {
         h: getRandomArbitrary(40, 60),
         s: getRandomArbitrary(80, 100),
-        l: getRandomArbitrary(45, 75),
-        a: getRandomArbitrary(0.5, 1),
+        l: getRandomArbitrary(50, 75),
+        a: getRandomArbitrary(0.3, 1),
       },
       isPulledIn: false,
       isPulledInRepeat: false,
     });
   }
 }
-
 //  DRAW PARTICLES
 function drawParticle(particle) {
   particle.fill.h >= page.particleColorDifference
@@ -266,18 +290,56 @@ function drawParticle(particle) {
     : (particle.fill.h += COLOR_STEP);
   particle.fill.h > 360 && (particle.fill.h = 0);
   ctx.beginPath();
-  // ctx.shadowColor = `hsla(${particle.fill.h}, ${particleSaturation}%, ${
-  //   particle.fill.l
-  // }%,${particle.fill.a * ALPHA_ADJUSTMENT})`;
-  // ctx.shadowBlur = 40;
-  // ctx.shadowOffsetX = 0;
-  // ctx.shadowOffsetY = 0;
+
+  ctx.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI, false);
   ctx.fillStyle = `hsla(${particle.fill.h},${particle.fill.s}%,${
     particle.fill.l
   }%,${particle.fill.a * ALPHA_ADJUSTMENT})`;
-  ctx.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI, false);
   ctx.fill();
   ctx.closePath();
+}
+
+function initClouds(count) {
+  for (let i = 0; i < count; i++) {
+    const cloud = {
+      x: getRandomArbitrary(2, 100),
+      y: getRandomArbitrary(25, 45),
+      size: getRandomArbitrary(5, 15),
+      opacity: getRandomArbitrary(0.1, 0.7),
+      duration: getRandomArbitrary(70000, 400000),
+      isFlipped: Math.random() > 0.5 ? false : true,
+    };
+    cloudsArr.push(cloud);
+    const cloudStyles = {
+      position: 'fixed',
+      left: `${cloud.x + 100}%`,
+      bottom: `${cloud.y}%`,
+      width: `${cloud.size}%`,
+      opacity: `${getRandomArbitrary(0.9, 1)}`,
+      zIndex: `${Math.floor(getRandomArbitrary(5, 10))}`,
+      animationDuration: `${cloud.duration}ms`,
+      animationDelay: `${getRandomArbitrary(0, 5)}s`,
+      transform: `rotateY(${cloud.isFlipped ? '180deg' : '0deg'})`,
+    };
+    const cloudDrifting = [
+      { left: `${cloud.x + 100}%` },
+      { left: `${getRandomArbitrary(-15, -5)}%` },
+    ];
+    const cloudDriftingOptions = {
+      duration: cloud.duration,
+      iterations: Infinity,
+    };
+    const cloudImg = document.createElement('img');
+    cloudImg.src = `images/cloud${Math.round(getRandomArbitrary(1, 4))}.svg`;
+    Object.assign(cloudImg.style, cloudStyles);
+    cloudImg.animate(cloudDrifting, cloudDriftingOptions);
+
+    skylineWrapper.appendChild(cloudImg);
+    cloudImg.onanimationiteration = () => {
+      cloudImg.remove();
+      initClouds(1);
+    };
+  }
 }
 
 //  GET RANDOM NUMBER BETWEEN 2 VALUES
@@ -336,6 +398,20 @@ function mousedownHandler(e) {
 function mouseupHandler(e) {
   e.preventDefault();
   mouse.isMouseDown = false;
+}
+function moveSkyline() {
+  skyline1.style.transform = `translateX(${
+    SKYLINE_1 + SKYLINE_1_STEP * (page.currentPage - 1)
+  }%)`;
+  skyline2.style.transform = `translateX(${
+    SKYLINE_2 + SKYLINE_2_STEP * (page.currentPage - 1)
+  }%)`;
+  skyline3.style.transform = `translateX(${
+    SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1)
+  }%)`;
+  skylineLights.style.transform = `translateX(${
+    SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1)
+  }%)`;
 }
 function wheelHandler(e) {
   if (!page.waiting) {
@@ -472,6 +548,15 @@ function changePage() {
       contactText.classList.add('text');
       //  Particle Effects
       page.particleColorDifference = page.colors.pg1;
+
+      skyline1.style.transition = '1s ease-in-out 0.1s';
+      skyline2.style.transition = '1s ease-in-out 0.1s';
+      skyline3.style.transition = '1s ease-in-out 0.1s';
+      skylineLights.style.transition = '1s ease-in-out 0.1s';
+
+      moveSkyline();
+      skylineLightsColor.style.fill = 'var(--page1-color)';
+      skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page1-color))`;
       break;
     case 2:
       //  Screen Transitions
@@ -521,6 +606,15 @@ function changePage() {
       contactText.classList.add('text');
       //  Particle Effects
       page.particleColorDifference = page.colors.pg2;
+
+      skyline1.style.transition = '1s ease-in-out 0.1s';
+      skyline2.style.transition = '1s ease-in-out 0.1s';
+      skyline3.style.transition = '1s ease-in-out 0.1s';
+      skylineLights.style.transition = '1s ease-in-out 0.1s';
+
+      moveSkyline();
+      skylineLightsColor.style.fill = 'var(--page2-color)';
+      skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page2-color))`;
       break;
     case 3:
       //  Screen Transitions
@@ -571,6 +665,15 @@ function changePage() {
 
       //  Particle Effects
       page.particleColorDifference = page.colors.pg3;
+
+      skyline1.style.transition = '1s ease-in-out 0.1s';
+      skyline2.style.transition = '1s ease-in-out 0.1s';
+      skyline3.style.transition = '1s ease-in-out 0.1s';
+      skylineLights.style.transition = '1s ease-in-out 0.1s';
+
+      moveSkyline();
+      skylineLightsColor.style.fill = 'var(--page3-color)';
+      skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page3-color))`;
       break;
     case 4:
       //  Screen Transitions
@@ -621,6 +724,14 @@ function changePage() {
 
       //  Particle Effects
       page.particleColorDifference = page.colors.pg4;
+
+      skyline1.style.transition = '1s ease-in-out 0.1s';
+      skyline2.style.transition = '1s ease-in-out 0.1s';
+      skyline3.style.transition = '1s ease-in-out 0.1s';
+      skylineLights.style.transition = '1s ease-in-out 0.1s';
+      moveSkyline();
+      skylineLightsColor.style.fill = 'var(--page4-color)';
+      skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page4-color))`;
       break;
 
     default:
