@@ -26,42 +26,25 @@ const introScreen = document.getElementById('intro-screen');
 const navContainerLoad = document.querySelector('.nav-container-load');
 const contactIconsLoad = document.querySelector('.contact-icons-load');
 
-const mousePos = document.querySelector('#mouse-pos');
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const STAR_COUNT = 2000;
+const starArr = [];
 
 const CLOUD_COUNT = 15;
 const SKYLINE_1 = 25;
 const SKYLINE_2 = 10;
 const SKYLINE_3 = 3;
-let SKYLINE_1_STEP = -18;
+let SKYLINE_1_STEP = -16;
 let SKYLINE_2_STEP = -6;
 let SKYLINE_3_STEP = -1.5;
 const LIGHT_SIZE = 5;
-
-const STEPS = 5;
-const PARTICLE_COUNT = 100;
-
-const ACCELERATION = 0.04;
-const MAX_VELOCITY = ACCELERATION * 80;
-const ACC_CLICK = 2;
-const PARTICLE_MIN_RADIUS = 1;
-const PARTICLE_MAX_RADIUS = 10;
-const COLOR_STEP = 0.5;
-const ALPHA_ADJUSTMENT = 0.1;
-const BOUNCINESS = 1;
 
 const page1Hue = 45;
 const page2Hue = 100;
 const page3Hue = 200;
 const page4Hue = 0;
 
-const initPadding = PARTICLE_MAX_RADIUS * 2;
-
-let particleAcceleration = ACCELERATION;
-
-const particleArr = [];
 const pagesArr = [
   homeContainer,
   aboutContainer,
@@ -88,7 +71,6 @@ const page = {
     pg3: page3Hue,
     pg4: page4Hue,
   },
-  particleColorDifference: 50,
 };
 
 const mouse = {
@@ -98,7 +80,8 @@ const mouse = {
 };
 let cloudsArr = [];
 
-//  EVENT LISTENERS
+//  EVENT LISTENERS  --------------------------------------------------------------------------------------------------------------------------------------------------
+
 //  Link Click Handlers
 logo.addEventListener('click', (e) => {
   e.preventDefault();
@@ -160,45 +143,9 @@ window.addEventListener('touchend', (e) => {
   mouse.y = e.changedTouches[0].clientY;
 });
 
+//  INITIALIZATION  --------------------------------------------------------------------------------------------------------------------------------------------------
 initPage();
-
-//  APP ENGINE
-// const engine = setInterval(() => app(), STEPS);
-// const mouseEngine = setInterval(() => app(), STEPS);
-
-//  MAIN APP
-function app() {
-  //  Set canvas size
-  ctx.canvas.width = window.innerWidth;
-  ctx.canvas.height = window.innerHeight;
-  //  Clear Screen
-  // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  //  If mousedown, increase particle speed, saturation & max speed
-  if (mouse.isMouseDown === true) {
-    particleAcceleration = ACCELERATION * ACC_CLICK;
-  } else {
-    particleAcceleration = ACCELERATION;
-  }
-  //  Track mouse/touch position
-  window.onmousemove = (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
-  };
-  window.ontouchmove = (e) => {
-    mouse.x = e.changedTouches[0].clientX;
-    mouse.y = e.changedTouches[0].clientY;
-  };
-  //  Move particles
-  for (let i = 0; i < particleArr.length; i++) {
-    applyForce(mouse, particleArr[i]);
-    //  Set screen behaviour - Wrap or Bounce
-    screenBounce(particleArr[i]);
-    // screenWrap(particleArr[i]);
-    //  Draw to canvas
-    drawParticle(particleArr[i]);
-  }
-}
-//  INITIALIZATION
+initCanvas();
 function initPage() {
   homeIntro.classList.remove('text');
   homeText.classList.remove('text');
@@ -223,90 +170,63 @@ function initPage() {
   skylineLights.style.transition = '0s linear';
 
   moveSkyline();
-  // initCanvas();
+  skylineLightsColor.style.fill = 'var(--page1-color)';
+  skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page1-color))`;
 }
 
 function initCanvas() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
 
-  // initParticles();
+  createStars(STAR_COUNT);
+  drawStars();
 }
-//  CALCULATING "GRAVITATIONAL" FORCE
-function applyForce(player, object) {
-  const radian = Math.atan2(player.x - object.x, player.y - object.y);
-  //  Apply Force
-  // console.log(player);
-  if (object.velocity.x >= MAX_VELOCITY) {
-    object.velocity.x = MAX_VELOCITY;
-  } else {
-    object.velocity.x += Math.sin(radian) * particleAcceleration;
-  }
-  if (object.velocity.x <= -MAX_VELOCITY) {
-    object.velocity.x = -MAX_VELOCITY;
-  } else {
-    object.velocity.x += Math.sin(radian) * particleAcceleration;
-  }
-  if (object.velocity.y >= MAX_VELOCITY) {
-    object.velocity.y = MAX_VELOCITY;
-  } else {
-    object.velocity.y += Math.cos(radian) * particleAcceleration;
-  }
-  if (object.velocity.y <= -MAX_VELOCITY) {
-    object.velocity.y = -MAX_VELOCITY;
-  } else {
-    object.velocity.y += Math.cos(radian) * particleAcceleration;
-  }
+console.log(starArr);
 
-  object.x += object.velocity.x;
-  object.y += object.velocity.y;
-}
-//  CREATE PARTICLES
-function initParticles() {
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    particleArr.push({
-      x: getRandomArbitrary(initPadding, window.innerWidth - initPadding),
-      y: getRandomArbitrary(initPadding, window.innerHeight - initPadding),
-      velocity: {
-        x: getRandomArbitrary(-MAX_VELOCITY, MAX_VELOCITY),
-        y: getRandomArbitrary(-MAX_VELOCITY, MAX_VELOCITY),
-      },
-      radius: getRandomArbitrary(PARTICLE_MIN_RADIUS, PARTICLE_MAX_RADIUS),
-      fill: {
-        h: getRandomArbitrary(40, 60),
-        s: getRandomArbitrary(80, 100),
-        l: getRandomArbitrary(50, 75),
-        a: getRandomArbitrary(0.3, 1),
-      },
-      isPulledIn: false,
-      isPulledInRepeat: false,
-    });
+function createStars(num) {
+  for (let i = 0; i < num; i++) {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    const star = {
+      x: x,
+      y: y,
+      xNormalized: x / window.innerWidth,
+      yNormalized: y / window.innerHeight,
+      radius: getRandomArbitrary(0.1, 1.3),
+      h:
+        Math.random() > 0.5
+          ? getRandomArbitrary(190, 230)
+          : getRandomArbitrary(350, 370),
+      s: getRandomArbitrary(40, 80),
+      l: getRandomArbitrary(70, 100),
+      a: getRandomArbitrary(0.3, 0.8),
+    };
+    starArr.push(star);
   }
 }
-//  DRAW PARTICLES
-function drawParticle(particle) {
-  particle.fill.h >= page.particleColorDifference
-    ? (particle.fill.h -= COLOR_STEP)
-    : (particle.fill.h += COLOR_STEP);
-  particle.fill.h > 360 && (particle.fill.h = 0);
-  ctx.beginPath();
 
-  ctx.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI, false);
-  ctx.fillStyle = `hsla(${particle.fill.h},${particle.fill.s}%,${
-    particle.fill.l
-  }%,${particle.fill.a * ALPHA_ADJUSTMENT})`;
-  ctx.fill();
-  ctx.closePath();
+function drawStars() {
+  starArr.forEach((star) => {
+    ctx.fillStyle = `hsla(${star.h},${star.s}%,${star.l}%,${star.a})`;
+    ctx.fillRect(
+      star.xNormalized * window.innerWidth,
+      star.yNormalized * window.innerHeight,
+      star.radius,
+      star.radius
+    );
+  });
 }
 
 function initClouds(count) {
   for (let i = 0; i < count; i++) {
     const cloud = {
       x: getRandomArbitrary(2, 100),
-      y: getRandomArbitrary(25, 45),
-      size: getRandomArbitrary(5, 15),
-      opacity: getRandomArbitrary(0.1, 0.7),
-      duration: getRandomArbitrary(70000, 400000),
+      y: getRandomArbitrary(25, 55),
+      size: getRandomArbitrary(3, 10),
+      opacity: getRandomArbitrary(0.95, 1),
+      animationDuration: getRandomArbitrary(40000, 400000),
+      animationDelay: getRandomArbitrary(0, 2),
+      zIndex: Math.floor(getRandomArbitrary(6, 10)),
       isFlipped: Math.random() > 0.5 ? false : true,
     };
     cloudsArr.push(cloud);
@@ -314,19 +234,19 @@ function initClouds(count) {
       position: 'fixed',
       left: `${cloud.x + 100}%`,
       bottom: `${cloud.y}%`,
-      width: `${cloud.size}%`,
-      opacity: `${getRandomArbitrary(0.9, 1)}`,
-      zIndex: `${Math.floor(getRandomArbitrary(5, 10))}`,
-      animationDuration: `${cloud.duration}ms`,
-      animationDelay: `${getRandomArbitrary(0, 5)}s`,
+      width: ` calc(30px + ${cloud.size}%)`,
+      opacity: `${cloud.opacity}`,
+      zIndex: `${cloud.zIndex}`,
+      animationDuration: `${cloud.animationDuration}ms`,
+      animationDelay: `${cloud.animationDelay}s`,
       transform: `rotateY(${cloud.isFlipped ? '180deg' : '0deg'})`,
     };
     const cloudDrifting = [
       { left: `${cloud.x + 100}%` },
-      { left: `${getRandomArbitrary(-15, -5)}%` },
+      { left: `${getRandomArbitrary(-25, -15)}%` },
     ];
     const cloudDriftingOptions = {
-      duration: cloud.duration,
+      duration: cloud.animationDuration,
       iterations: Infinity,
     };
     const cloudImg = document.createElement('img');
@@ -342,44 +262,17 @@ function initClouds(count) {
   }
 }
 
+// SMALLER FUNCTIONS  --------------------------------------------------------------------------------------------------------------------------------------------------
 //  GET RANDOM NUMBER BETWEEN 2 VALUES
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
-//  FIND DISTANCE BETWEEN 2 POINTS//
-function distBetweenPoints(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
-//  SCREEN WRAP BEHAVIOUR
-function screenWrap(item) {
-  if (item.x > window.innerWidth) item.x = item.x - window.innerWidth;
-  if (item.x < 0) item.x = item.x + window.innerWidth;
-  if (item.y < 0) item.y = item.y + window.innerHeight;
-  if (item.y > window.innerHeight) item.y = item.y - window.innerHeight;
-}
-function screenBounce(item) {
-  if (item.x + item.radius >= window.innerWidth) {
-    item.x = window.innerWidth - item.radius * 1.1;
-    item.velocity.x = -item.velocity.x * BOUNCINESS;
-  }
-  if (item.x <= item.radius) {
-    item.x = item.radius;
-    item.velocity.x = -item.velocity.x * BOUNCINESS;
-  }
-  if (item.y + item.radius >= window.innerHeight) {
-    item.y = window.innerHeight - item.radius * 1.1;
-    item.velocity.y = -item.velocity.y * BOUNCINESS;
-  }
-  if (item.y <= item.radius) {
-    item.y = item.radius;
-    item.velocity.y = -item.velocity.y * BOUNCINESS;
-  }
-}
+
 //  HANDLERS METHODS
 function resizeHandler() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
-  particleArr.forEach((particle) => drawParticle(particle));
+  drawStars();
 }
 function bodyMousedownHandler(e) {
   e.preventDefault();
@@ -400,9 +293,11 @@ function mouseupHandler(e) {
   mouse.isMouseDown = false;
 }
 function moveSkyline() {
+  skyline1.style.boxShadow = `0px 0px calc(20px + 2.5vw) calc(18px + 0.6vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.3)`;
   skyline1.style.transform = `translateX(${
     SKYLINE_1 + SKYLINE_1_STEP * (page.currentPage - 1)
   }%)`;
+  skyline2.style.boxShadow = `0px 0px calc(25px + 3vw) calc(50px + 1.1vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.5)`;
   skyline2.style.transform = `translateX(${
     SKYLINE_2 + SKYLINE_2_STEP * (page.currentPage - 1)
   }%)`;
@@ -423,22 +318,14 @@ function wheelHandler(e) {
       } else {
         page.currentPage++;
       }
-      particleArr.forEach(
-        (object) => (object.velocity.y += getRandomArbitrary(-200, 200))
-      );
+
       page.waiting = true;
     } else if (page.currentPage <= 1) {
       page.currentPage = page.totalPages;
       page.waiting = true;
-      particleArr.forEach(
-        (object) => (object.velocity.x += getRandomArbitrary(-200, 200))
-      );
     } else {
       page.currentPage--;
       page.waiting = true;
-      particleArr.forEach(
-        (object) => (object.velocity.x += getRandomArbitrary(-200, 200))
-      );
     }
     changePage();
     setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
@@ -462,7 +349,7 @@ function changeClass(
   }
 }
 
-//  Deactivate Pages   ------------------------------------------------------------------------------------------
+//  Deactivate Pages
 function deactivatePage(currentPage, nextPage, exitStyle, enterStyle) {
   currentPage.style.transition = `${page.screenExitDelay}ms ease-in-out, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
   nextPage.style.transition = `0s, opacity ${page.screenEnterDelay}ms ease-in-out ${page.screenEnterDelay}ms`;
@@ -477,7 +364,7 @@ function deactivatePage(currentPage, nextPage, exitStyle, enterStyle) {
   }, 100);
 }
 
-//  Change Pages
+//  Change Pages  --------------------------------------------------------------------------------------------------------------------------------------------------
 function changePage() {
   let exitStyle;
   let enterStyle;

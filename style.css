@@ -1,7 +1,7 @@
 /* VARIABLES ==================================================================================================================*/
 :root {
-  --main-color: hsl(200, 20%, 7%);
-  --sec-color: hsl(240, 25%, 5%);
+  --main-color: hsl(200, 30%, 5%);
+  --sec-color: hsl(225, 30%, 7%);
   --text-color: hsl(190, 0%, 70%);
   --page1-hue: 45;
   --page2-hue: 100;
@@ -20,8 +20,8 @@
   --anim-time-text: 0.5s;
   --anim-time-underline: 0.3s;
   --anim-time-icon: 0.2s;
-  --underline-weight: 2.4px;
-  --perspective: 200px;
+  --underline-weight: 3px;
+  --perspective: 400px;
 }
 
 /* FONTS ================================================================================================================================*/
@@ -130,7 +130,7 @@ canvas {
 .skyline2,
 .skyline3,
 .skyline-lights-wrapper {
-  width: 250%;
+  width: calc(2000px + 100%);
   position: fixed;
   bottom: 0;
   transition: 1s ease-in-out 0.1s;
@@ -140,17 +140,23 @@ canvas {
 }
 
 .skyline1 {
-  fill: hsl(210, 5%, 0%);
-  transform: rotateY(180deg);
+  height: 1px;
+  fill: hsl(200, 0%, 0%);
+  /* box-shadow: 0 0px calc(20px + 2.5vw) calc(18px + 0.6vw) hsla(var(--page1-hue), 100%, 50%, 0.3); */
+  /* filter: drop-shadow(0 20px 15px var(--page4-color)); */
   z-index: 9;
 }
 .skyline2 {
+  height: 10px;
   fill: hsl(200, 0%, 6%);
+  /* box-shadow: 0 0px calc(25px + 3vw) calc(50px + 1.2vw) hsla(var(--page1-hue), 100%, 50%, 0.7); */
+  /* filter: drop-shadow(0 20px 15px var(--page4-color)); */
+  /* box-shadow: 0 0px 50px red; */
   z-index: 8;
 }
 .skyline3 {
-  fill: hsl(210, 5%, 10%);
-  z-index: 6;
+  fill: hsl(200, 0%, 8%);
+  z-index: 7;
 }
 
 .skyline-lights {
@@ -162,15 +168,31 @@ canvas {
 }
 
 .moon {
-  width: calc(100px + 30%);
+  width: calc(150px + 15%);
   aspect-ratio: 1;
   position: fixed;
-  top: 50%;
-  background: linear-gradient(hsl(200, 0%, 25%), hsl(200, 0%, 10%));
+  bottom: 0%;
+  background: radial-gradient(hsl(200, 5%, 45%), hsl(200, 5%, 10%));
   opacity: 1;
   border-radius: 50%;
   box-shadow: 0 0 50px hsla(200, 0%, 25%, 0.8);
   z-index: 2;
+  animation: movedown 500s cubic-bezier(0.13, 0.31, 0.61, 0.09) infinite;
+}
+
+@keyframes movedown {
+  0% {
+    width: calc(150px + 15%);
+    left: 55%;
+    top: calc(94% - 5vw);
+    box-shadow: 0 0 60px hsla(200, 0%, 20%, 0.7);
+  }
+  100% {
+    width: calc(100px + 0%);
+    left: 30%;
+    top: calc(-25% + 5vw);
+    box-shadow: 0 0 5px hsla(200, 0%, 20%, 0.1);
+  }
 }
 
 .clouds {
@@ -209,7 +231,7 @@ canvas {
   content: '';
   width: 0px;
   height: var(--underline-weight);
-  margin-top: -13.5px;
+  margin-top: calc(-11px - 0.3vw);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -222,7 +244,7 @@ canvas {
   justify-content: center;
   align-items: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 3rem;
+  font-size: calc(42px + 1vw);
   font-weight: 300;
   text-align: center;
   color: var(--page1-color);
@@ -238,7 +260,7 @@ canvas {
   justify-content: center;
   align-items: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 2.3rem;
+  font-size: calc(32px + 1vw);
   font-weight: 900;
   letter-spacing: -1px;
   text-align: center;
@@ -281,7 +303,7 @@ canvas {
 }
 .nav-text {
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: calc(10px + 0.4vw);
   font-weight: 600;
   letter-spacing: -0.5px;
   word-spacing: 3px;
@@ -308,7 +330,7 @@ canvas {
 .nav-text-link::after {
   content: '';
   width: 0%;
-  height: var(--underline-weight);
+  height: 2px;
   background: transparent;
   transition: var(--anim-time-underline) ease-out;
   z-index: -1;
@@ -321,7 +343,7 @@ canvas {
 .active-link::after {
   content: '';
   width: 100%;
-  height: var(--underline-weight);
+  height: 2px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
@@ -470,6 +492,8 @@ canvas {
 .about-title,
 .projects-title,
 .contact-title {
+  display: flex;
+  flex-wrap: wrap;
   font-family: 'Poppins', sans-serif;
   font-size: 64px;
   font-weight: 900;
@@ -480,7 +504,9 @@ canvas {
   transition: var(--anim-time-text) ease;
 }
 .home-title {
+  margin: 2vh 0;
   color: var(--page1-color);
+  line-height: 0.8;
 }
 .home-title > span {
   color: white;
@@ -570,7 +596,7 @@ canvas {
 }
 .home-text {
   color: var(--page1-text-color);
-  text-align: justify;
+  text-align: left;
 }
 .about-text {
   color: var(--page2-text-color);
