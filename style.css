@@ -2,7 +2,7 @@
 :root {
   --main-color: hsl(200, 30%, 5%);
   --sec-color: hsl(225, 30%, 7%);
-  --text-color: hsl(190, 0%, 70%);
+  --text-color: hsl(190, 0%, 80%);
   --page1-hue: 45;
   --page2-hue: 100;
   --page3-hue: 200;
@@ -11,16 +11,16 @@
   --page2-color: hsl(var(--page2-hue), 70%, 40%);
   --page3-color: hsl(var(--page3-hue), 80%, 50%);
   --page4-color: hsl(var(--page4-hue), 80%, 45%);
-  --page1-text-color: hsl(var(--page1-hue), 50%, 75%);
-  --page2-text-color: hsl(var(--page2-hue), 30%, 75%);
-  --page3-text-color: hsl(var(--page3-hue), 40%, 75%);
-  --page4-text-color: hsl(var(--page4-hue), 25%, 75%);
+  --page1-text-color: hsl(var(--page1-hue), 60%, 80%);
+  --page2-text-color: hsl(var(--page2-hue), 40%, 80%);
+  --page3-text-color: hsl(var(--page3-hue), 50%, 80%);
+  --page4-text-color: hsl(var(--page4-hue), 35%, 80%);
   --anim-time-intro: 1.4s;
   --anim-time-screen: 1.1s;
   --anim-time-text: 0.5s;
   --anim-time-underline: 0.3s;
   --anim-time-icon: 0.2s;
-  --underline-weight: 3px;
+  --underline-weight: 1px;
   --perspective: 400px;
 }
 
@@ -172,12 +172,14 @@ canvas {
   aspect-ratio: 1;
   position: fixed;
   bottom: 0%;
-  background: radial-gradient(hsl(200, 5%, 45%), hsl(200, 5%, 10%));
+  /* background: radial-gradient(hsl(200, 5%, 45%), hsl(200, 5%, 10%)); */
   opacity: 1;
+  filter: brightness(0.5) contrast(0.4)
+    drop-shadow(0 0 50px hsla(200, 0%, 25%, 0.8));
   border-radius: 50%;
-  box-shadow: 0 0 50px hsla(200, 0%, 25%, 0.8);
+  /* box-shadow: 0 0 50px hsla(200, 0%, 25%, 0.8); */
   z-index: 2;
-  animation: movedown 500s cubic-bezier(0.13, 0.31, 0.61, 0.09) infinite;
+  animation: movedown 500s cubic-bezier(0.13, 0.31, 0.61, 0.09) -150s infinite;
 }
 
 @keyframes movedown {
@@ -185,13 +187,13 @@ canvas {
     width: calc(150px + 15%);
     left: 55%;
     top: calc(94% - 5vw);
-    box-shadow: 0 0 60px hsla(200, 0%, 20%, 0.7);
+    /* box-shadow: 0 0 60px hsla(200, 0%, 20%, 0.7); */
   }
   100% {
-    width: calc(100px + 0%);
+    width: calc(150px + 2vw);
     left: 30%;
     top: calc(-25% + 5vw);
-    box-shadow: 0 0 5px hsla(200, 0%, 20%, 0.1);
+    /* box-shadow: 0 0 5px hsla(200, 0%, 20%, 0.1); */
   }
 }
 
@@ -231,7 +233,7 @@ canvas {
   content: '';
   width: 0px;
   height: var(--underline-weight);
-  margin-top: calc(-11px - 0.3vw);
+  margin-top: calc(-10px - 0.15vw);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -244,24 +246,24 @@ canvas {
   justify-content: center;
   align-items: center;
   font-family: 'Poppins', sans-serif;
-  font-size: calc(42px + 1vw);
-  font-weight: 300;
+  font-size: calc(38px + 1vw);
+  font-weight: 200;
   text-align: center;
   color: var(--page1-color);
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: var(--anim-time-text) ease;
-  column-gap: 4px;
+  column-gap: 0.3vw;
 }
 
 .logo-span {
-  margin-top: -5px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Poppins', sans-serif;
+  /* font-family: 'Consolas', 'Courier New', monospace; */
   font-size: calc(32px + 1vw);
-  font-weight: 900;
+  font-weight: 300;
   letter-spacing: -1px;
   text-align: center;
   color: var(--text-color);
@@ -278,7 +280,7 @@ canvas {
 }
 .active-logo-link::after {
   content: '';
-  width: 56%;
+  width: 50%;
   height: var(--underline-weight);
   color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
@@ -351,7 +353,7 @@ canvas {
 .contact-icons {
   width: 2px;
   padding: 5vh 0;
-  margin: 0 7%;
+  margin: 0 calc(20px + 2%);
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -457,7 +459,7 @@ canvas {
 .contact-container {
   width: 100%;
   height: 100%;
-  padding: 15vh 20%;
+  padding: calc(10vh + 2vw) 15%;
   position: fixed;
   display: flex;
   justify-content: flex-start;
@@ -474,7 +476,7 @@ canvas {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   text-align: left;
 }
@@ -482,9 +484,12 @@ canvas {
   align-items: flex-start;
 }
 .skills-wrapper {
-  margin-top: 10vh;
+  justify-content: center;
   align-items: center;
-  row-gap: 4vh;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 4vw;
+  row-gap: 3vh;
   transition: var(--anim-time-text) ease;
 }
 
@@ -492,21 +497,24 @@ canvas {
 .about-title,
 .projects-title,
 .contact-title {
+  margin-bottom: 2vh;
   display: flex;
   flex-wrap: wrap;
   font-family: 'Poppins', sans-serif;
-  font-size: 64px;
+  font-size: calc(32px + 1vw);
   font-weight: 900;
-  text-transform: capitalize;
-  letter-spacing: -3px;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  line-height: 0.8;
   word-spacing: 5px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   transition: var(--anim-time-text) ease;
 }
 .home-title {
   margin: 2vh 0;
+  font-size: calc(40px + 1vw);
+  text-transform: capitalize;
   color: var(--page1-color);
-  line-height: 0.8;
 }
 .home-title > span {
   color: white;
@@ -550,30 +558,38 @@ canvas {
 }
 
 .skills-icon {
-  width: 64px;
-  height: 64px;
+  width: calc(25px + 1.5vw);
+  aspect-ratio: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: 0.4s ease;
+  filter: drop-shadow(0 0 3px black) brightness(0.8);
+  transition: 0.2s ease;
   transform: perspective(var(--perspective));
 }
-.skills-icon-wrapper:hover .skills-icon {
-  transform: perspective(var(--perspective)) translateY(-5px);
+.skills-icon-wrapper:hover .skills-icon,
+.skills-icon-wrapper:hover .skills-icon-title {
+  transform: perspective(var(--perspective)) translateY(-2px);
+  filter: drop-shadow(0 0 10px black) brightness(1);
+  color: white;
 }
 
 .skills-icon-title {
   font-family: 'Rajdhani', sans-serif;
+  font-size: calc(12px + 0.3vw);
   font-weight: 400;
+  text-shadow: 0 0 15px black;
+  transition: 0.2s ease;
+  color: var(--text-color);
 }
 
 .skills-icon-padding {
-  padding: 3px;
+  padding: 2px;
 }
 
 .backend-wrapper {
-  height: 44px;
+  height: 68px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -584,10 +600,10 @@ canvas {
 .projects-text,
 .contact-text {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 21px;
+  font-size: calc(16px + 0.2vw);
   font-weight: 400;
   line-height: 1.4;
-  text-align: center;
+  text-align: left;
   word-spacing: 1px;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
   color: var(--text-color);
@@ -599,6 +615,7 @@ canvas {
   text-align: left;
 }
 .about-text {
+  margin-bottom: 5vh;
   color: var(--page2-text-color);
 }
 .projects-text {

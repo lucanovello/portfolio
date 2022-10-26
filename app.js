@@ -28,7 +28,7 @@ const contactIconsLoad = document.querySelector('.contact-icons-load');
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const STAR_COUNT = 2000;
+const STAR_COUNT = 2500;
 const starArr = [];
 
 const CLOUD_COUNT = 15;
@@ -77,6 +77,14 @@ const mouse = {
   x: window.innerWidth / 2,
   y: window.innerHeight / 2,
   isMouseDown: false,
+  mouseStart: {
+    x: 0,
+    y: 0,
+  },
+  mouseEnd: {
+    x: 0,
+    y: 0,
+  },
 };
 let cloudsArr = [];
 
@@ -123,25 +131,99 @@ contactLink.addEventListener('click', (e) => {
     changePage();
   }
 });
-//  Cursor Handlers
-body.addEventListener('mousedown', bodyMousedownHandler);
-body.addEventListener('mouseup', bodyMouseupHandler);
+
 //  Screen Handlers
 window.addEventListener('resize', resizeHandler);
-window.addEventListener('wheel', wheelHandler);
+window.addEventListener('wheel', (e) => {
+  if (!page.waiting) {
+    page.prevPage = page.currentPage;
+
+    if (e.wheelDeltaY < 0) {
+      if (page.currentPage >= page.totalPages) {
+        page.currentPage = 1;
+      } else {
+        page.currentPage++;
+      }
+
+      page.waiting = true;
+    } else if (page.currentPage <= 1) {
+      page.currentPage = page.totalPages;
+      page.waiting = true;
+    } else {
+      page.currentPage--;
+      page.waiting = true;
+    }
+    changePage();
+    setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+  }
+});
 //  Mouse/Touch Handlers
-window.addEventListener('mousedown', mousedownHandler);
-window.addEventListener('mouseup', mouseupHandler);
+window.addEventListener('mousedown', (e) => {
+  e.preventDefault();
+  body.classList.add('grabbing');
+  mouse.isMouseDown = true;
+  mouse.x = e.x;
+  mouse.y = e.y;
+  mouse.mouseStart.x = e.x;
+  mouse.mouseStart.y = e.y;
+});
+window.addEventListener('mouseup', (e) => {
+  e.preventDefault();
+  body.classList.remove('grabbing');
+  mouse.isMouseDown = false;
+  mouse.x = e.x;
+  mouse.y = e.y;
+  mouse.mouseEnd.x = e.x;
+  mouse.mouseEnd.y = e.y;
+  swipeScreen(60);
+});
 window.addEventListener('touchstart', (e) => {
   mouse.isMouseDown = true;
-  mouse.x = e.changedTouches[0].clientX;
-  mouse.y = e.changedTouches[0].clientY;
+  body.classList.add('grabbing');
+  mouse.x = e.changedTouches[0].screenX;
+  mouse.y = e.changedTouches[0].screenY;
+  mouse.mouseStart.x = e.changedTouches[0].screenX;
+  mouse.mouseStart.y = e.changedTouches[0].screenY;
 });
 window.addEventListener('touchend', (e) => {
+  body.classList.remove('grabbing');
   mouse.isMouseDown = false;
-  mouse.x = e.changedTouches[0].clientX;
-  mouse.y = e.changedTouches[0].clientY;
+  mouse.x = e.changedTouches[0].screenX;
+  mouse.y = e.changedTouches[0].screenY;
+  mouse.mouseEnd.x = e.changedTouches[0].screenX;
+  mouse.mouseEnd.y = e.changedTouches[0].screenY;
+  swipeScreen(window.innerWidth / 8);
 });
+
+function swipeScreen(swipeLength) {
+  if (!page.waiting) {
+    page.prevPage = page.currentPage;
+    console.log('not-waiting');
+    if (mouse.mouseEnd.x - mouse.mouseStart.x < -swipeLength) {
+      if (page.currentPage >= page.totalPages) {
+        page.currentPage = 1;
+      } else {
+        page.currentPage++;
+      }
+      console.log('Swiped Left');
+      page.waiting = true;
+      changePage();
+      setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+    } else if (mouse.mouseEnd.x - mouse.mouseStart.x > swipeLength) {
+      if (page.currentPage <= 1) {
+        page.currentPage = page.totalPages;
+      } else {
+        page.currentPage--;
+      }
+      console.log('Swiped Right');
+      page.waiting = true;
+      changePage();
+      setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+    }
+    return;
+  }
+  console.log('waiting');
+}
 
 //  INITIALIZATION  --------------------------------------------------------------------------------------------------------------------------------------------------
 initPage();
@@ -181,7 +263,6 @@ function initCanvas() {
   createStars(STAR_COUNT);
   drawStars();
 }
-console.log(starArr);
 
 function createStars(num) {
   for (let i = 0; i < num; i++) {
@@ -219,15 +300,31 @@ function drawStars() {
 
 function initClouds(count) {
   for (let i = 0; i < count; i++) {
+    const x = getRandomArbitrary(2, 100);
+    const cloudLeftDrifting = [
+      { left: `${x + 100}%` },
+      { left: `${getRandomArbitrary(-25, -15)}%` },
+    ];
+    const cloudRightDrifting = [
+      { left: `${getRandomArbitrary(-25, -15)}%` },
+      { left: `${x + 100}%` },
+    ];
     const cloud = {
-      x: getRandomArbitrary(2, 100),
+      x: x,
       y: getRandomArbitrary(25, 55),
       size: getRandomArbitrary(3, 10),
       opacity: getRandomArbitrary(0.95, 1),
-      animationDuration: getRandomArbitrary(40000, 400000),
-      animationDelay: getRandomArbitrary(0, 2),
+      animationDuration: getRandomArbitrary(60000, 400000),
+      animationDelay: getRandomArbitrary(0, 1),
       zIndex: Math.floor(getRandomArbitrary(6, 10)),
       isFlipped: Math.random() > 0.5 ? false : true,
+      cloudDrifting:
+        Math.random() > 0.5 ? cloudLeftDrifting : cloudRightDrifting,
+    };
+
+    const cloudDriftingOptions = {
+      duration: cloud.animationDuration,
+      iterations: Infinity,
     };
     cloudsArr.push(cloud);
     const cloudStyles = {
@@ -241,19 +338,11 @@ function initClouds(count) {
       animationDelay: `${cloud.animationDelay}s`,
       transform: `rotateY(${cloud.isFlipped ? '180deg' : '0deg'})`,
     };
-    const cloudDrifting = [
-      { left: `${cloud.x + 100}%` },
-      { left: `${getRandomArbitrary(-25, -15)}%` },
-    ];
-    const cloudDriftingOptions = {
-      duration: cloud.animationDuration,
-      iterations: Infinity,
-    };
+
     const cloudImg = document.createElement('img');
     cloudImg.src = `images/cloud${Math.round(getRandomArbitrary(1, 4))}.svg`;
     Object.assign(cloudImg.style, cloudStyles);
-    cloudImg.animate(cloudDrifting, cloudDriftingOptions);
-
+    cloudImg.animate(cloud.cloudDrifting, cloudDriftingOptions);
     skylineWrapper.appendChild(cloudImg);
     cloudImg.onanimationiteration = () => {
       cloudImg.remove();
@@ -274,24 +363,7 @@ function resizeHandler() {
   ctx.canvas.height = window.innerHeight;
   drawStars();
 }
-function bodyMousedownHandler(e) {
-  e.preventDefault();
-  body.classList.add('grabbing');
-}
-function bodyMouseupHandler(e) {
-  e.preventDefault();
-  body.classList.remove('grabbing');
-}
-function mousedownHandler(e) {
-  e.preventDefault();
-  mouse.isMouseDown = true;
-  mouse.x = e.x;
-  mouse.y = e.y;
-}
-function mouseupHandler(e) {
-  e.preventDefault();
-  mouse.isMouseDown = false;
-}
+
 function moveSkyline() {
   skyline1.style.boxShadow = `0px 0px calc(20px + 2.5vw) calc(18px + 0.6vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.3)`;
   skyline1.style.transform = `translateX(${
@@ -308,29 +380,7 @@ function moveSkyline() {
     SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1)
   }%)`;
 }
-function wheelHandler(e) {
-  if (!page.waiting) {
-    page.prevPage = page.currentPage;
 
-    if (e.wheelDeltaY < 0) {
-      if (page.currentPage >= page.totalPages) {
-        page.currentPage = 1;
-      } else {
-        page.currentPage++;
-      }
-
-      page.waiting = true;
-    } else if (page.currentPage <= 1) {
-      page.currentPage = page.totalPages;
-      page.waiting = true;
-    } else {
-      page.currentPage--;
-      page.waiting = true;
-    }
-    changePage();
-    setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
-  }
-}
 //  Change Classes
 function changeClass(
   elementsRemoveArr,
