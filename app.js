@@ -5,6 +5,8 @@ const contactIconsLoad = document.querySelector('.contact-icons-load');
 const logo = document.getElementById('logo-wrapper');
 const logoLastName = document.getElementById('logo-last-name');
 const [aboutNavText, projectsNavText, contactNavText] = document.querySelectorAll('.nav-text');
+const [homeNavMobile, aboutNavMobile, projectsNavMobile, contactNavMobile] =
+    document.querySelectorAll('.mobile-nav-btn');
 const focusLinks = document.querySelectorAll('a');
 const aboutLink = document.getElementById('about-link');
 const projectsLink = document.getElementById('projects-link');
@@ -16,11 +18,8 @@ const contactContainer = document.getElementById('contact-container');
 const [homeTitle, aboutTitle, projectsTitle, contactTitle] = document.querySelectorAll('.title');
 const [homeIntro, homeText, aboutText, projectsText, contactText] =
     document.querySelectorAll('.text');
-const [projectDesktop1, projectMobile1] = document.querySelectorAll('#project-1-btn');
-const [projectDesktop2, projectMobile2] = document.querySelectorAll('#project-2-btn');
-const [projectDesktop3, projectMobile3] = document.querySelectorAll('#project-3-btn');
-const [projectDesktop4, projectMobile4] = document.querySelectorAll('#project-4-btn');
-const [projectDesktop5, projectMobile5] = document.querySelectorAll('#project-5-btn');
+
+const projectsListWrapper = document.getElementById('projects-list-wrapper');
 const projectsList = document.getElementById('projects-list');
 const projectsListItem = document.querySelectorAll('#projects-list-item');
 const [skyline1, skyline2, skyline3] = document.querySelectorAll('#skyline');
@@ -50,8 +49,7 @@ const page2Hue = 100;
 const page3Hue = 200;
 const page4Hue = 0;
 
-const PROJECTS_ITEM_SCROLL_DESKTOP = 35;
-const PROJECTS_ITEM_SCROLL_MOBILE = PROJECTS_ITEM_SCROLL_DESKTOP / 6;
+const PROJECTS_ITEM_SCROLL_DESKTOP = 20;
 
 const pagesArr = [homeContainer, aboutContainer, projectsContainer, contactContainer];
 
@@ -60,6 +58,7 @@ const page = {
     prevPage: 1,
     totalPages: 4,
     waiting: true,
+    projectsWaiting: false,
     introDelay: 1400,
     screenEnterDelay: 500,
     screenExitDelay: 1000,
@@ -92,58 +91,445 @@ const mouse = {
     },
     minDrag: 5,
     dragX: 0,
-    dragXMultiplier: 1,
+    dragXMultiplier: 0.4,
 };
 let cloudsArr = [];
 
+const projectsListArr = [
+    {
+        image: "url('/images/projects/u2d/u2d-hero.jpg')",
+        title: 'Up2DateSolutions.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        url: 'https://www.up2datesolutions.com/',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                    class="projects-list-item-icon github-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                    />
+                </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                    class="projects-list-item-icon external-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                    ></path>
+                </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/rizza-hero.jpg')",
+        title: 'RizzaInsurance.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        url: 'https://www.rizzainsurance.com/',
+        links: [
+            {
+                name: 'external',
+                href: 'https://www.rizzainsurance.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/fps-hero.jpg')",
+        title: 'FoxtailPropertyServices.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'Wordpress',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        url: 'https://www.foxtailpropertyservices.com/',
+        links: [
+            {
+                name: 'external',
+                href: 'http://www.foxtailpropertyservices.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
+        title: 'Up2DateSolutions.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
+        title: 'Up2DateSolutions.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
+        title: 'Up2DateSolutions.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
+        title: 'Up2DateSolutions.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+];
+let projectsListChildren = [];
+
+//  INITIALIZATION  --------------------------------------------------------------------------------------------------------------------------------------------------
+initCanvas();
+initPage();
+initProjects();
+
+const projectsObject = {
+    positionX: 0,
+    scrollSpeed: projectsList.offsetWidth / projectsList.children.length / 2,
+};
 //  EVENT LISTENERS  --------------------------------------------------------------------------------------------------------------------------------------------------
 
 //  Link Click Handlers
-logo.addEventListener('click', (e) => {
+logo.addEventListener('click', (e) => navClickHandler(e, 1));
+aboutLink.addEventListener('click', (e) => navClickHandler(e, 2));
+projectsLink.addEventListener('click', (e) => navClickHandler(e, 3));
+contactLink.addEventListener('click', (e) => navClickHandler(e, 4));
+
+homeNavMobile.addEventListener('click', (e) => {
+    navClickHandler(e, 1);
+    mobileNavColorHandler(homeNavMobile, 1, [aboutNavMobile, projectsNavMobile, contactNavMobile]);
+});
+aboutNavMobile.addEventListener('click', (e) => {
+    navClickHandler(e, 2);
+    mobileNavColorHandler(aboutNavMobile, 2, [homeNavMobile, projectsNavMobile, contactNavMobile]);
+});
+projectsNavMobile.addEventListener('click', (e) => {
+    navClickHandler(e, 3);
+    mobileNavColorHandler(projectsNavMobile, 3, [aboutNavMobile, homeNavMobile, contactNavMobile]);
+});
+contactNavMobile.addEventListener('click', (e) => {
+    navClickHandler(e, 4);
+    mobileNavColorHandler(contactNavMobile, 4, [aboutNavMobile, projectsNavMobile, homeNavMobile]);
+});
+
+function navClickHandler(e, pageNum) {
     e.preventDefault();
-    if (page.currentPage != 1 && !page.waiting) {
+    if (page.currentPage != pageNum && !page.waiting) {
         page.prevPage = page.currentPage;
-        page.currentPage = 1;
+        page.currentPage = pageNum;
         page.waiting = true;
         setTimeout(() => (page.waiting = false), page.screenExitDelay);
         changePage();
     }
-});
-aboutLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (page.currentPage != 2 && !page.waiting) {
-        page.prevPage = page.currentPage;
-        page.currentPage = 2;
-        page.waiting = true;
-        setTimeout(() => (page.waiting = false), page.screenExitDelay);
-        changePage();
-    }
-});
-projectsLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (page.currentPage != 3 && !page.waiting) {
-        page.prevPage = page.currentPage;
-        page.currentPage = 3;
-        page.waiting = true;
-        setTimeout(() => (page.waiting = false), page.screenExitDelay);
-        changePage();
-    }
-});
-contactLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (page.currentPage != 4 && !page.waiting) {
-        page.prevPage = page.currentPage;
-        page.currentPage = 4;
-        page.waiting = true;
-        setTimeout(() => (page.waiting = false), page.screenExitDelay);
-        changePage();
-    }
-});
+}
+
+function mobileNavColorHandler(activeElement, pageNum, disabledElements) {
+    activeElement.style.color = `var(--page${pageNum}-color)`;
+    disabledElements.forEach((element) => (element.style.color = 'white'));
+}
 
 //  Screen Handlers
 window.addEventListener('resize', resizeHandler);
 window.addEventListener('wheel', (e) => {
-    if (!page.waiting) {
+    if (!page.waiting && !page.projectsWaiting) {
         page.prevPage = page.currentPage;
 
         if (e.wheelDeltaY < 0) {
@@ -166,69 +552,29 @@ window.addEventListener('wheel', (e) => {
     }
 });
 //  Mouse/Touch Handlers
-window.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    if (!page.waiting) {
-        mouse.isMouseDown = true;
-        mouse.x = e.x;
-        mouse.y = e.y;
-        mouse.prevX = mouse.x;
-        mouse.mouseStart.x = e.x;
-        mouse.mouseStart.y = e.y;
-        mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-        changeTransition('0s linear');
-        window.onmousemove = (event) => {
-            mouse.prevX = mouse.x;
-            mouse.x = event.x;
-            mouse.y = event.y;
-            mouse.dragX =
-                ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-            moveSkyline();
-        };
-        body.classList.add('grabbing');
-    }
-});
 
-window.addEventListener('mouseup', (e) => {
-    e.preventDefault();
-    mouse.isMouseDown = false;
-    mouse.prevX = mouse.x;
-    mouse.x = e.x;
-    mouse.y = e.y;
-    mouse.mouseEnd.x = e.x;
-    mouse.mouseEnd.y = e.y;
-    mouse.dragX = 0;
-    changeTransition('0.4s ease');
-    moveSkyline();
-    swipeScreen();
-    window.onmousemove = null;
-    body.classList.remove('grabbing');
-});
-window.addEventListener('touchstart', (e) => {
-    if (!page.waiting) {
-        mouse.isMouseDown = true;
-        mouse.x = e.changedTouches[0].screenX;
-        mouse.y = e.changedTouches[0].screenY;
-        mouse.prevX = mouse.x;
-        mouse.mouseStart.x = e.changedTouches[0].screenX;
-        mouse.mouseStart.y = e.changedTouches[0].screenY;
-        mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-
-        changeTransition('0s linear');
-
-        window.ontouchmove = (event) => {
-            mouse.prevX = mouse.x;
-            mouse.x = event.changedTouches[0].screenX;
-            mouse.y = event.changedTouches[0].screenY;
-            mouse.dragX =
-                ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-            moveSkyline();
-        };
-
-        body.classList.add('grabbing');
-    }
-});
+// window.addEventListener('touchstart', (e) => {
+//     if (!page.waiting) {
+//         mouse.isMouseDown = true;
+//         mouse.x = e.changedTouches[0].screenX;
+//         mouse.y = e.changedTouches[0].screenY;
+//         mouse.prevX = mouse.x;
+//         mouse.mouseStart.x = e.changedTouches[0].screenX;
+//         mouse.mouseStart.y = e.changedTouches[0].screenY;
+//         mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
+//         changeTransition('0s linear');
+//         window.ontouchmove = (event) => {
+//             mouse.prevX = mouse.x;
+//             mouse.x = event.changedTouches[0].screenX;
+//             mouse.y = event.changedTouches[0].screenY;
+//             mouse.dragX =
+//                 ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
+//             moveSkyline();
+//         };
+//     }
+// });
 window.addEventListener('touchend', (e) => {
+    window.ontouchmove = null;
     mouse.isMouseDown = false;
     mouse.prevX = mouse.x;
     mouse.x = e.changedTouches[0].screenX;
@@ -236,203 +582,91 @@ window.addEventListener('touchend', (e) => {
     mouse.mouseEnd.x = e.changedTouches[0].screenX;
     mouse.mouseEnd.y = e.changedTouches[0].screenY;
     mouse.dragX = 0;
-    changeTransition('0.4s ease');
-    moveSkyline();
-    swipeScreen();
-    window.ontouchmove = null;
-    body.classList.remove('grabbing');
 });
 
-// PROJECT SCROLLING FOR IMAGE PREVIEWS -------------------------------------------------------------------
-projectsListItem.forEach((item) => {
-    item.addEventListener('mousemove', (e) => {
-        e.preventDefault();
-        page.waiting = true;
-    });
-    item.addEventListener('mouseleave', (e) => {
-        e.preventDefault();
-        page.waiting = false;
-    });
-    item.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        if (e.wheelDeltaY < 0) {
-            if (parseInt(item.children[0].style.backgroundPositionY) >= 100) {
-                item.children[0].style.backgroundPositionY = '100%';
-            } else {
-                item.children[0].style.backgroundPositionY = `${
-                    (!parseInt(item.children[0].style.backgroundPositionY)
-                        ? parseInt(
-                              window
-                                  .getComputedStyle(item.children[0])
-                                  .getPropertyValue('background-position-y')
-                          )
-                        : parseInt(item.children[0].style.backgroundPositionY)) +
-                    (item.children[1].dataset.active === 'desktop'
-                        ? PROJECTS_ITEM_SCROLL_DESKTOP
-                        : PROJECTS_ITEM_SCROLL_MOBILE)
-                }%`;
-            }
-        }
-        if (e.wheelDeltaY > 0) {
-            if (parseInt(item.children[0].style.backgroundPositionY) <= 0) {
-                item.children[0].style.backgroundPositionY = '0%';
-            } else {
-                item.children[0].style.backgroundPositionY = `${
-                    (!parseInt(item.children[0].style.backgroundPositionY)
-                        ? parseInt(
-                              window
-                                  .getComputedStyle(item.children[0])
-                                  .getPropertyValue('background-position-y')
-                          )
-                        : parseInt(item.children[0].style.backgroundPositionY)) -
-                    (item.children[1].dataset.active === 'desktop'
-                        ? PROJECTS_ITEM_SCROLL_DESKTOP
-                        : PROJECTS_ITEM_SCROLL_MOBILE)
-                }%`;
-            }
-        }
-    });
-    item.children[1].addEventListener('click', (e) => {
-        if (item.children[1].dataset.active === 'desktop' && e.target.dataset.type === 'mobile') {
-            item.children[1].children[0].classList.remove('projects-active-btn');
-            item.children[1].children[1].classList.add('projects-active-btn');
-            item.children[0].style.background =
-                "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')";
-            item.children[1].dataset.active = 'mobile';
-            item.style.transition = '1s ease';
-            item.style.maxWidth = '300px';
-            console.log(e);
-        }
-        if (item.children[1].dataset.active === 'mobile' && e.target.dataset.type === 'desktop') {
-            item.children[1].children[1].classList.remove('projects-active-btn');
-            item.children[1].children[0].classList.add('projects-active-btn');
-            item.children[0].style.background =
-                "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')";
-            item.children[1].dataset.active = 'desktop';
-            item.style.transition = '1s ease';
-            item.style.maxWidth = '500px';
-            console.log(e);
-        }
-    });
+projectsListWrapper.addEventListener('scroll', (e) => {
+    e.preventDefault();
+    projectsList.style.transition = '0.3s ease';
+    console.log(e);
 });
 
-// PROJECT BUTTON HANDLERS FOR DESKTOP OR MOBILE VIEW -------------------------------------------------------------------
-projectDesktop1.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectMobile1,
-        projectDesktop1,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')"
-    )
-);
-projectMobile1.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectDesktop1,
-        projectMobile1,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')"
-    )
-);
-projectDesktop2.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectMobile2,
-        projectDesktop2,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')"
-    )
-);
-projectMobile2.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectDesktop2,
-        projectMobile2,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')"
-    )
-);
-projectDesktop3.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectMobile3,
-        projectDesktop3,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')"
-    )
-);
-projectMobile3.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectDesktop3,
-        projectMobile3,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')"
-    )
-);
-projectDesktop4.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectMobile4,
-        projectDesktop4,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')"
-    )
-);
-projectMobile4.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectDesktop4,
-        projectMobile4,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')"
-    )
-);
-projectDesktop5.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectMobile5,
-        projectDesktop5,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-snippet.jpg')"
-    )
-);
-projectMobile5.addEventListener('click', (e) =>
-    btnClickHandler(
-        e,
-        projectDesktop5,
-        projectMobile5,
-        "left top / 100% no-repeat url('/images/projects/u2d/u2d-website-mobile-main-snippet.jpg')"
-    )
-);
+projectsListWrapper.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    projectsList.style.transition = '0.3s ease';
 
-function btnClickHandler(e, remElement, addElement, imageUrl) {
-    remElement.classList.remove('projects-active-btn');
-    addElement.classList.add('projects-active-btn');
-    e.target.parentElement.previousElementSibling.style.background = imageUrl;
-}
-
-function swipeScreen() {
-    if (!page.waiting) {
-        page.prevPage = page.currentPage;
-        if (mouse.x - mouse.prevX < -mouse.minDrag) {
-            if (page.currentPage >= page.totalPages) {
-                page.currentPage = 1;
-            } else {
-                page.currentPage++;
-            }
-            page.waiting = true;
-            changePage();
-            setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
-        } else if (mouse.x - mouse.prevX > mouse.minDrag) {
-            if (page.currentPage <= 1) {
-                page.currentPage = page.totalPages;
-            } else {
-                page.currentPage--;
-            }
-            page.waiting = true;
-            changePage();
-            setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
-        }
-        return;
+    if (e.wheelDeltaY < 0) {
+        page.projectsWaiting = true;
+        projectsObject.positionX -= projectsObject.scrollSpeed;
     }
-}
+    if (e.wheelDeltaY > 0) {
+        page.projectsWaiting = true;
+        projectsObject.positionX += projectsObject.scrollSpeed;
+    }
 
-//  INITIALIZATION  --------------------------------------------------------------------------------------------------------------------------------------------------
-initCanvas();
-initPage();
+    if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
+
+    if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2) {
+        projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
+        setTimeout(() => (page.projectsWaiting = false), 200);
+        // page.projectsWaiting = false;
+    }
+
+    projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
+});
+projectsListWrapper.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    mouse.isMouseDown = true;
+    mouse.prevX = e.x;
+    mouse.x = e.x;
+    projectsList.style.transition = '0.03s linear';
+    window.onmousemove = (e) => {
+        mouse.prevX = mouse.x;
+        mouse.x = e.x;
+        mouse.dragX = mouse.x - mouse.prevX;
+        projectsObject.positionX += mouse.dragX;
+        if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
+        if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2)
+            projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
+        projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
+    };
+    body.style.cursor = 'grabbing';
+    projectsListWrapper.style.cursor = 'grabbing';
+});
+projectsListWrapper.addEventListener('touchstart', (e) => {
+    mouse.isMouseDown = true;
+    mouse.x = e.changedTouches[0].screenX;
+    mouse.prevX = mouse.x;
+    mouse.mouseStart.x = e.changedTouches[0].screenX;
+    mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
+    projectsList.style.transition = '0.03s linear';
+    window.ontouchmove = (event) => {
+        mouse.prevX = mouse.x;
+        mouse.x = event.changedTouches[0].screenX;
+        mouse.dragX = mouse.x - mouse.prevX;
+        projectsObject.positionX += mouse.dragX;
+        if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
+        if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2)
+            projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
+        projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
+    };
+    body.style.cursor = 'grabbing';
+    projectsListWrapper.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mouseup', (e) => {
+    window.onmousemove = null;
+    mouse.dragX = 0;
+    mouse.prevX = mouse.x;
+    mouse.x = e.x;
+    body.style.cursor = 'default';
+    projectsListWrapper.style.cursor = 'grab';
+});
+
+projectsListWrapper.addEventListener('mouseover', (e) => {
+    page.projectsWaiting = true;
+});
+projectsListWrapper.addEventListener('mouseout', (e) => (page.projectsWaiting = false));
+
 function initPage() {
     homeIntro.classList.remove('text');
     homeText.classList.remove('text');
@@ -463,21 +697,83 @@ function initCanvas() {
     createStars(STAR_COUNT);
     drawStars();
 }
+function initProjects() {
+    projectsListArr.forEach((project) => {
+        let projectsListItemEl = document.createElement('li');
+        projectsListItemEl.classList.add('projects-list-item');
+        projectsListItemEl.id = 'projects-list-item';
+        projectsList.append(projectsListItemEl);
+
+        // let projectsListImageLinkEl = project.url
+        //     ? document.createElement('a')
+        //     : document.createElement('div');
+        let projectsListImageLinkEl = document.createElement('div');
+        // project.url && (projectsListImageLinkEl.href = project.url);
+        // projectsListImageLinkEl.target = '_blank';
+        // projectsListImageLinkEl.rel = 'noopener noreferrer';
+        projectsListImageLinkEl.draggable = false;
+
+        projectsListImageLinkEl.classList.add('projects-list-item-image-wrapper');
+        projectsListImageLinkEl.style.backgroundImage = project.image;
+        projectsListItemEl.append(projectsListImageLinkEl);
+
+        let projectsListTextWrapperEl = document.createElement('div');
+        projectsListTextWrapperEl.classList.add('projects-list-item-text-wrapper');
+        projectsListItemEl.append(projectsListTextWrapperEl);
+
+        let projectsListTextTitleEl = document.createElement('h2');
+        projectsListTextTitleEl.classList.add('projects-list-item-text-title');
+        projectsListTextTitleEl.innerText = project.title;
+        projectsListTextWrapperEl.append(projectsListTextTitleEl);
+
+        let projectsListTextSubtitleEl = document.createElement('ul');
+        projectsListTextSubtitleEl.classList.add('projects-list-item-text-subtitle');
+        projectsListTextWrapperEl.append(projectsListTextSubtitleEl);
+
+        project.skills.forEach((skill) => {
+            let projectsListTextSkillEl = document.createElement('li');
+            projectsListTextSkillEl.classList.add(skill.class);
+            projectsListTextSkillEl.innerText = skill.skill;
+            projectsListTextSubtitleEl.append(projectsListTextSkillEl);
+        });
+
+        let projectsListTextDescEl = document.createElement('p');
+        projectsListTextDescEl.classList.add('projects-list-item-text-desc');
+        projectsListTextDescEl.innerText = project.description;
+        projectsListTextWrapperEl.append(projectsListTextDescEl);
+
+        let projectsListLinksEl = document.createElement('div');
+        projectsListLinksEl.classList.add('projects-external-links-wrapper');
+        projectsListTextWrapperEl.append(projectsListLinksEl);
+
+        project.links.forEach((link) => {
+            let projectsListLinkEl = document.createElement('a');
+            link.href && (projectsListLinkEl.href = link.href);
+            projectsListLinkEl.target = '_blank';
+            projectsListLinkEl.rel = 'noopener noreferrer';
+            projectsListLinkEl.draggable = false;
+            projectsListLinkEl.innerHTML = link.icon;
+            projectsListLinksEl.append(projectsListLinkEl);
+        });
+
+        projectsListChildren = document.querySelectorAll('.projects-list-item');
+    });
+}
 
 function moveSkyline() {
     skyline1.style.boxShadow = `0px 0px calc(20px + 2.5vw) calc(18px + 0.6vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.3)`;
     skyline1.style.transform = `translateX(${
-        SKYLINE_1 + SKYLINE_1_STEP * (page.currentPage - 1) + mouse.dragX
+        SKYLINE_1 + SKYLINE_1_STEP * (page.currentPage - 1)
     }%)`;
     skyline2.style.boxShadow = `0px 0px calc(25px + 3vw) calc(50px + 1.1vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.5)`;
     skyline2.style.transform = `translateX(${
-        SKYLINE_2 + SKYLINE_2_STEP * (page.currentPage - 1) + mouse.dragX
+        SKYLINE_2 + SKYLINE_2_STEP * (page.currentPage - 1)
     }%)`;
     skyline3.style.transform = `translateX(${
-        SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1) + mouse.dragX
+        SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1)
     }%)`;
     skylineLights.style.transform = `translateX(${
-        SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1) + mouse.dragX
+        SKYLINE_3 + SKYLINE_3_STEP * (page.currentPage - 1)
     }%)`;
 }
 

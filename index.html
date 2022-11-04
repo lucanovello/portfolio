@@ -15,36 +15,34 @@
             <div class="logo-wrapper active-logo-link page1-bg page1-color" id="logo-wrapper">
                 <a href="#" target="_blank"
                     ><h1 class="logo" id="logo">
-                        <span class="logo-first-name">luca</span>
-                        <span class="logo-last-name" id="logo-last-name">novello</span>
+                        <span class="logo-first-name">L</span>
+                        <span class="logo-last-name" id="logo-last-name">N</span>
                     </h1>
                 </a>
             </div>
 
             <ul class="nav-menu">
                 <li class="nav-text">
-                    <a href="#about-me" target="_blank" class="nav-text-link" id="about-link"
-                        >About Me</a
-                    >
+                    <a href="#about-me" class="nav-text-link" id="about-link">About Me</a>
                 </li>
                 <li class="nav-text">
-                    <a href="#projects" target="_blank" class="nav-text-link" id="projects-link"
-                        >Projects</a
-                    >
+                    <a href="#projects" class="nav-text-link" id="projects-link">Projects</a>
                 </li>
                 <li class="nav-text">
-                    <a href="#contact" target="_blank" class="nav-text-link" id="contact-link"
-                        >Contact</a
-                    >
+                    <a href="#contact" class="nav-text-link" id="contact-link">Contact</a>
                 </li>
             </ul>
         </nav>
 
         <nav class="mobile-nav-container">
-            <button class="mobile-nav-btn mobile-nav-btn-home"></button>
-            <button class="mobile-nav-btn mobile-nav-btn-about"></button>
-            <button class="mobile-nav-btn mobile-nav-btn-projects"></button>
-            <button class="mobile-nav-btn mobile-nav-btn-contact"></button>
+            <button class="mobile-nav-btn mobile-nav-btn-home" id="mobile-nav-btn">Home</button>
+            <button class="mobile-nav-btn mobile-nav-btn-about" id="mobile-nav-btn">About</button>
+            <button class="mobile-nav-btn mobile-nav-btn-projects" id="mobile-nav-btn">
+                Projects
+            </button>
+            <button class="mobile-nav-btn mobile-nav-btn-contact" id="mobile-nav-btn">
+                Contact
+            </button>
         </nav>
 
         <!-- MAIN CONTENT ===================================================================================================================================== -->
@@ -64,7 +62,7 @@
                 <div class="about-wrapper">
                     <h1 class="about-title title">About Me</h1>
                     <p class="about-text">
-                        <span>Focused</span> and <span>quick-learning</span>
+                        <span>Focused</span> and <span>quick learning</span>
                         <span>Full Stack Developer</span> with <span>6 years</span> of experience in
                         <span>web development</span>, <span>programming</span>, and
                         <span>UX/UI design</span>. To help build my projects, I use
@@ -173,7 +171,7 @@
                 </div>
             </section>
             <section class="projects-container page-exit-right" id="projects-container">
-                <div class="projects-wrapper">
+                <div class="projects-wrapper" draggable="false">
                     <h1 class="projects-title title">Projects</h1>
                     <div class="projects-text-wrapper text">
                         <div class="projects-legend">
@@ -181,208 +179,11 @@
                             <p class="backend-icon">Backend</p>
                             <p class="design-icon">Design</p>
                         </div>
-                        <ul class="projects-list" id="projects-list">
-                            <!-- Project 1 ---------------------------------------------------------------------->
-                            <li class="projects-list-item" id="projects-list-item">
-                                <div
-                                    class="projects-list-item-image-wrapper project-1-desktop"
-                                ></div>
-                                <div class="projects-list-item-btns-wrapper" data-active="desktop">
-                                    <button
-                                        class="projects-list-item-btn desktop-btn projects-active-btn"
-                                        id="project-1-btn"
-                                        data-type="desktop"
-                                    >
-                                        Desktop
-                                    </button>
-                                    <button
-                                        class="projects-list-item-btn mobile-btn"
-                                        id="project-1-btn"
-                                        data-type="mobile"
-                                    >
-                                        Mobile
-                                    </button>
-                                </div>
-                                <div class="projects-list-item-text-wrapper">
-                                    <h3 class="projects-list-item-text-title">
-                                        Up2DateSolutions.com
-                                    </h3>
-                                    <ul class="projects-list-item-text-subtitle">
-                                        <li class="frontend">HTML</li>
-                                        <li class="frontend">CSS</li>
-                                        <li class="frontend">JavaScript</li>
-                                        <li class="design">Adobe CC</li>
-                                    </ul>
-                                    <p class="projects-list-item-text-desc">
-                                        Fully responsive and mobile friendly, single page website
-                                        built using HTML5, CSS3 and JavaScript. The logo and
-                                        graphics were created and processed using Adobe Illustrator
-                                        and Photoshop.
-                                    </p>
-                                </div>
-                            </li>
-
-                            <!-- Project 2 ---------------------------------------------------------------------->
-                            <li class="projects-list-item" id="projects-list-item">
-                                <div
-                                    class="projects-list-item-image-wrapper project-2-desktop"
-                                ></div>
-                                <div class="projects-list-item-btns-wrapper" data-active="desktop">
-                                    <button
-                                        class="projects-list-item-btn desktop-btn projects-active-btn"
-                                        id="project-2-btn"
-                                        data-type="desktop"
-                                    >
-                                        Desktop
-                                    </button>
-                                    <button
-                                        class="projects-list-item-btn mobile-btn"
-                                        id="project-2-btn"
-                                        data-type="mobile"
-                                    >
-                                        Mobile
-                                    </button>
-                                </div>
-                                <div class="projects-list-item-text-wrapper">
-                                    <h3 class="projects-list-item-text-title">
-                                        RizzaInsurance.com
-                                    </h3>
-                                    <ul class="projects-list-item-text-subtitle">
-                                        <li class="frontend">HTML</li>
-                                        <li class="frontend">CSS</li>
-                                        <li class="frontend">JavaScript</li>
-                                        <li class="design">Adobe CC</li>
-                                    </ul>
-                                    <p class="projects-list-item-text-desc">
-                                        Fully responsive and mobile friendly, single page website
-                                        built using HTML5, CSS3 and JavaScript. The logo and
-                                        graphics were created and processed using Adobe Illustrator
-                                        and Photoshop.
-                                    </p>
-                                </div>
-                            </li>
-
-                            <!-- Project 3 ---------------------------------------------------------------------->
-                            <li class="projects-list-item" id="projects-list-item">
-                                <div
-                                    class="projects-list-item-image-wrapper project-3-desktop"
-                                ></div>
-                                <div class="projects-list-item-btns-wrapper" data-active="desktop">
-                                    <button
-                                        class="projects-list-item-btn desktop-btn projects-active-btn"
-                                        id="project-3-btn"
-                                        data-type="desktop"
-                                    >
-                                        Desktop
-                                    </button>
-                                    <button
-                                        class="projects-list-item-btn mobile-btn"
-                                        id="project-3-btn"
-                                        data-type="mobile"
-                                    >
-                                        Mobile
-                                    </button>
-                                </div>
-                                <div class="projects-list-item-text-wrapper">
-                                    <h3 class="projects-list-item-text-title">
-                                        FoxtailPropertyServices.com
-                                    </h3>
-                                    <ul class="projects-list-item-text-subtitle">
-                                        <li class="frontend">HTML</li>
-                                        <li class="frontend">CSS</li>
-                                        <li class="frontend">JavaScript</li>
-                                        <li class="design">Adobe CC</li>
-                                    </ul>
-                                    <p class="projects-list-item-text-desc">
-                                        Fully responsive and mobile friendly, single page website
-                                        built using HTML5, CSS3 and JavaScript. The logo and
-                                        graphics were created and processed using Adobe Illustrator
-                                        and Photoshop.
-                                    </p>
-                                </div>
-                            </li>
-
-                            <!-- Project 4 ---------------------------------------------------------------------->
-                            <li class="projects-list-item" id="projects-list-item">
-                                <div
-                                    class="projects-list-item-image-wrapper project-4-desktop"
-                                ></div>
-                                <div class="projects-list-item-btns-wrapper" data-active="desktop">
-                                    <button
-                                        class="projects-list-item-btn desktop-btn projects-active-btn"
-                                        id="project-4-btn"
-                                        data-type="desktop"
-                                    >
-                                        Desktop
-                                    </button>
-                                    <button
-                                        class="projects-list-item-btn mobile-btn"
-                                        id="project-4-btn"
-                                        data-type="mobile"
-                                    >
-                                        Mobile
-                                    </button>
-                                </div>
-                                <div class="projects-list-item-text-wrapper">
-                                    <h3 class="projects-list-item-text-title">Ecommerce Website</h3>
-                                    <ul class="projects-list-item-text-subtitle">
-                                        <li class="frontend">React</li>
-                                        <li class="frontend">CSS</li>
-                                        <li class="backend">Nodejs</li>
-                                        <li class="backend">MongoDB</li>
-                                        <li class="backend">Express</li>
-                                        <li class="design">Adobe CC</li>
-                                    </ul>
-                                    <p class="projects-list-item-text-desc">
-                                        Fully responsive and mobile friendly, single page website
-                                        built using HTML5, CSS3 and JavaScript. The logo and
-                                        graphics were created and processed using Adobe Illustrator
-                                        and Photoshop.
-                                    </p>
-                                </div>
-                            </li>
-
-                            <!-- Project 5 ---------------------------------------------------------------------->
-                            <li class="projects-list-item" id="projects-list-item">
-                                <div
-                                    class="projects-list-item-image-wrapper project-5-desktop"
-                                ></div>
-                                <div class="projects-list-item-btns-wrapper" data-active="desktop">
-                                    <button
-                                        class="projects-list-item-btn desktop-btn projects-active-btn"
-                                        id="project-5-btn"
-                                        data-type="desktop"
-                                    >
-                                        Desktop
-                                    </button>
-                                    <button
-                                        class="projects-list-item-btn mobile-btn"
-                                        id="project-5-btn"
-                                        data-type="mobile"
-                                    >
-                                        Mobile
-                                    </button>
-                                </div>
-                                <div class="projects-list-item-text-wrapper">
-                                    <h3 class="projects-list-item-text-title">Social Media Site</h3>
-                                    <ul class="projects-list-item-text-subtitle">
-                                        <li class="frontend">React</li>
-                                        <li class="frontend">CSS</li>
-                                        <li class="backend">Nodejs</li>
-                                        <li class="backend">Nextjs</li>
-                                        <li class="backend">MongoDB</li>
-                                        <li class="backend">Express</li>
-                                        <li class="design">Adobe CC</li>
-                                    </ul>
-                                    <p class="projects-list-item-text-desc">
-                                        Fully responsive and mobile friendly, single page website
-                                        built using HTML5, CSS3 and JavaScript. The logo and
-                                        graphics were created and processed using Adobe Illustrator
-                                        and Photoshop.
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="projects-list-wrapper" id="projects-list-wrapper">
+                            <ul class="projects-list" id="projects-list">
+                                <div class="projects-list-background"></div>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -411,9 +212,32 @@
         </footer>
         <div class="intro-screen" id="intro-screen"></div>
         <div class="contact-icons contact-icons-load">
-            <a href="mailto:lucanovelloto@gmail.com" target="_blank"
-                ><i class="fa-solid fa-envelope nav-icon envelope"></i
-            ></a>
+            <a
+                href="https://www.linkedin.com/in/luca-novello-917a36234"
+                class="nav-icon linkedin"
+                target="_blank"
+            >
+                <svg
+                    height="24px"
+                    viewBox="0 0 72 72"
+                    width="24px"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <g fill="none" fill-rule="evenodd">
+                        <path
+                            d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z"
+                            class="linkedin-blue"
+                            fill="#007EBB"
+                        />
+                        <path
+                            d="M62,62 L51.315625,62 L51.315625,43.8021149 C51.315625,38.8127542 49.4197917,36.0245323 45.4707031,36.0245323 C41.1746094,36.0245323 38.9300781,38.9261103 38.9300781,43.8021149 L38.9300781,62 L28.6333333,62 L28.6333333,27.3333333 L38.9300781,27.3333333 L38.9300781,32.0029283 C38.9300781,32.0029283 42.0260417,26.2742151 49.3825521,26.2742151 C56.7356771,26.2742151 62,30.7644705 62,40.051212 L62,62 Z M16.349349,22.7940133 C12.8420573,22.7940133 10,19.9296567 10,16.3970067 C10,12.8643566 12.8420573,10 16.349349,10 C19.8566406,10 22.6970052,12.8643566 22.6970052,16.3970067 C22.6970052,19.9296567 19.8566406,22.7940133 16.349349,22.7940133 Z M11.0325521,62 L21.769401,62 L21.769401,27.3333333 L11.0325521,27.3333333 L11.0325521,62 Z"
+                            class="linkedin-white"
+                            fill="#fff"
+                        />
+                    </g>
+                </svg>
+            </a>
+
             <a href="https://github.com/lunovello" target="_blank"
                 ><svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -463,31 +287,9 @@
                     </g>
                 </svg>
             </a>
-            <a
-                href="https://www.linkedin.com/in/luca-novello-917a36234"
-                class="nav-icon linkedin"
-                target="_blank"
-            >
-                <svg
-                    height="24px"
-                    viewBox="0 0 72 72"
-                    width="24px"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <g fill="none" fill-rule="evenodd">
-                        <path
-                            d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z"
-                            class="linkedin-blue"
-                            fill="#007EBB"
-                        />
-                        <path
-                            d="M62,62 L51.315625,62 L51.315625,43.8021149 C51.315625,38.8127542 49.4197917,36.0245323 45.4707031,36.0245323 C41.1746094,36.0245323 38.9300781,38.9261103 38.9300781,43.8021149 L38.9300781,62 L28.6333333,62 L28.6333333,27.3333333 L38.9300781,27.3333333 L38.9300781,32.0029283 C38.9300781,32.0029283 42.0260417,26.2742151 49.3825521,26.2742151 C56.7356771,26.2742151 62,30.7644705 62,40.051212 L62,62 Z M16.349349,22.7940133 C12.8420573,22.7940133 10,19.9296567 10,16.3970067 C10,12.8643566 12.8420573,10 16.349349,10 C19.8566406,10 22.6970052,12.8643566 22.6970052,16.3970067 C22.6970052,19.9296567 19.8566406,22.7940133 16.349349,22.7940133 Z M11.0325521,62 L21.769401,62 L21.769401,27.3333333 L11.0325521,27.3333333 L11.0325521,62 Z"
-                            class="linkedin-white"
-                            fill="#fff"
-                        />
-                    </g>
-                </svg>
-            </a>
+            <a href="mailto:lucanovelloto@gmail.com" target="_blank"
+                ><i class="fa-solid fa-envelope nav-icon envelope"></i
+            ></a>
         </div>
         <div class="skyline-container">
             <div class="skyline-wrapper" id="skyline-wrapper">
@@ -1968,8 +1770,6 @@ c-0.458-0.797-0.912-0.946-1.674-0.546C0,173.164,0.023,200,0.023,200h1960L1959.99
                     <svg
                         class="skyline-lights bottom-0"
                         id="skyline-lights"
-                        version="1.1"
-                        id="Layer_4_1_"
                         xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         x="0px"
@@ -1977,30 +1777,25 @@ c-0.458-0.797-0.912-0.946-1.674-0.546C0,173.164,0.023,200,0.023,200h1960L1959.99
                         viewBox="0 0 1960 200"
                     >
                         <path
-                            d="M994.674,62.987c-0.075-0.093-0.095-0.208-0.113-0.309c-0.019-0.107-0.045-0.255-0.208-0.255h-0.001
-        c-0.868,0.088-2.371,0.132-4.47,0.132c-2.979,0-6.146-0.092-6.177-0.093l-0.114-0.003l0.012,0.114
-        c0.01,0.086-0.068,0.195-0.246,0.343c-0.557,0.469-0.435,1.082-0.326,1.623c0.018,0.089,0.035,0.177,0.049,0.261
-        c0.079,0.511,0.689,0.599,1.074,0.654c0.38,0.053,0.767,0.092,1.142,0.13c0.157,0.016,0.313,0.032,0.471,0.049
-        c0.179,0.019,1.533,0.045,2.777,0.063c-0.11,5.276-0.348,12.819-0.578,18.39c-0.119,2.877-0.128,5.819-0.137,8.664
-        c-0.008,2.843-0.017,5.782-0.136,8.654c-0.073,1.737-0.074,3.211-0.075,4.637c-0.001,1.334-0.002,2.714-0.061,4.328l-0.007,0.18
-        l0.156-0.089c0.014-0.008,1.436-0.803,3.745-0.803c0.083,0,0.168,0.001,0.254,0.003l0.115,0.003l-0.013-0.114
-        c-0.019-0.156-1.797-15.762-1.974-22.803c-0.142-5.693-0.318-17.408-0.372-21.037c1.145,0.014,2.163,0.021,2.397,0.013
-        c0.191-0.009,0.385,0.005,0.579,0.019c0.16,0.011,0.32,0.021,0.48,0.021c0.312,0,0.724-0.035,1.146-0.311
-        c0.584-0.381,0.918-0.81,0.992-1.275C995.119,63.784,994.991,63.384,994.674,62.987z"
+                            d="M991.956,53.938c-0.518-0.38-0.814-1.074-0.818-1.74c0-0.236,0.098-0.912,0.032-1.143
+                    c-0.114-0.393-0.378-0.459-0.534-0.837c-0.133-0.318-0.119-0.887-0.121-1.211c-0.033-9.934-0.06-31.101-0.574-31.567
+                    c-0.135-0.095-0.129-0.404-0.14-0.62c-0.125-2.686-0.283-5.373-0.34-8.063c-0.06-2.735-0.01-5.473-0.023-8.21
+                    c0-0.183-0.133-0.364-0.201-0.547l-0.371-0.002c-0.068,0.183-0.201,0.364-0.201,0.547c-0.014,2.737,0.036,5.475-0.023,8.21
+                    c-0.057,2.69-0.215,5.377-0.34,8.063c-0.011,0.216-0.02,0.525-0.154,0.62c-0.43,0.375-0.526,21.633-0.56,31.567
+                    c-0.002,0.324,0.012,0.893-0.121,1.211c-0.156,0.378-0.42,0.444-0.534,0.837c-0.065,0.231,0.032,0.907,0.032,1.143
+                    c-0.005,0.718-0.425,1.76-0.425,1.76C989.516,54.183,991.956,53.938,991.956,53.938z"
                         />
                         <path
-                            d="M989.141,54.152C989.141,54.152,989.141,54.152,989.141,54.152c1.66,0,2.813-0.114,2.825-0.115l0.26-0.026
-        l-0.21-0.154c-0.469-0.344-0.774-0.995-0.778-1.659c0-0.075,0.011-0.195,0.022-0.332c0.025-0.312,0.056-0.665,0.006-0.839
-        c-0.067-0.231-0.182-0.36-0.292-0.485c-0.092-0.104-0.179-0.201-0.246-0.362c-0.111-0.269-0.112-0.751-0.112-1.071l-0.008-2.322
-        c-0.056-18.339-0.172-29.033-0.609-29.428c-0.078-0.056-0.088-0.3-0.094-0.461l-0.004-0.082c-0.03-0.66-0.063-1.321-0.096-1.981
-        c-0.099-1.992-0.201-4.052-0.244-6.079c-0.037-1.729-0.031-3.489-0.025-5.191c0.004-1.006,0.008-2.011,0.002-3.017
-        c0-0.146-0.065-0.281-0.13-0.411c-0.027-0.057-0.056-0.114-0.077-0.171L989.306-0.1l-0.51-0.003l-0.024,0.065
-        c-0.021,0.057-0.05,0.114-0.077,0.171c-0.064,0.13-0.13,0.265-0.13,0.411c-0.006,1.006-0.002,2.011,0.002,3.017
-        c0.006,1.702,0.012,3.462-0.025,5.191c-0.043,2.027-0.146,4.087-0.244,6.079c-0.032,0.661-0.065,1.321-0.096,1.981l-0.002,0.03
-        c-0.008,0.168-0.021,0.451-0.118,0.52c-0.229,0.198-0.502,3.975-0.594,31.642l-0.001,0.102c0,0.32-0.001,0.803-0.113,1.071
-        c-0.066,0.161-0.153,0.258-0.245,0.362c-0.11,0.125-0.225,0.254-0.293,0.486c-0.049,0.174-0.019,0.527,0.007,0.839
-        c0.012,0.136,0.022,0.257,0.022,0.331c-0.005,0.69-0.414,1.713-0.418,1.723l-0.051,0.127l0.136,0.01
-        C987.372,54.12,988.25,54.152,989.141,54.152z"
+                            d="M994.674,62.987c-0.075-0.093-0.095-0.208-0.113-0.309c-0.019-0.107-0.045-0.255-0.208-0.255h-0.001
+                    c-0.868,0.088-2.371,0.132-4.469,0.132h-0.001c-2.979,0-6.146-0.092-6.177-0.093l-0.114-0.003l0.012,0.114
+                    c0.01,0.086-0.068,0.195-0.246,0.343c-0.557,0.469-0.435,1.082-0.326,1.623c0.018,0.089,0.035,0.177,0.049,0.261
+                    c0.079,0.511,0.689,0.599,1.074,0.654c0.38,0.053,0.767,0.092,1.142,0.13c0.156,0.016,0.313,0.032,0.471,0.049l1.887-0.1
+                    c0.264,0.037,0.592,0.026,0.777,0.324c0.119,0.195,0.099,0.602,0.099,0.829c0.004,5.864-0.376,11.641-0.562,17.493
+                    c-0.184,5.751-0.254,11.483-0.438,17.229c-0.097,3.021-0.178,6.047-0.262,9.072c1.414-0.544,3.006-0.857,4.695-0.857
+                    c0.078,0,0.154,0.008,0.232,0.009c-1.35-7.629-1.729-15.769-1.906-22.795c-0.17-6.791-0.311-13.675-0.783-20.449
+                    c-0.049-0.704,0.221-0.746,0.783-0.767l1.164,0.104c0.194,0,0.336-0.001,0.406-0.004c0.189-0.005,0.385,0.006,0.579,0.019
+                    c0.16,0.011,0.32,0.021,0.48,0.021c0.312,0,0.724-0.035,1.146-0.311c0.584-0.381,0.918-0.81,0.992-1.275
+                    C995.119,63.784,994.991,63.384,994.674,62.987z"
                         />
                     </svg>
                 </div>
