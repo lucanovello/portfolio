@@ -27,7 +27,7 @@ const skylineWrapper = document.getElementById('skyline-wrapper');
 const skylineLights = document.getElementById('skyline-lights-wrapper');
 const skylineLightsColor = document.getElementById('skyline-lights');
 const clouds = document.getElementById('clouds');
-const [clouds1, clouds2, clouds3, clouds4] = document.querySelectorAll('#cloud');
+let projectsListChildren;
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -474,7 +474,7 @@ const projectsListArr = [
         ],
     },
 ];
-let projectsListChildren = [];
+let isProjectScrolling = false;
 
 //  INITIALIZATION  --------------------------------------------------------------------------------------------------------------------------------------------------
 initCanvas();
@@ -483,7 +483,7 @@ initProjects();
 
 const projectsObject = {
     positionX: 0,
-    scrollSpeed: projectsList.offsetWidth / projectsList.children.length / 2,
+    scrollSpeed: projectsList.scrollWidth / projectsList.children.length / 2,
 };
 //  EVENT LISTENERS  --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -495,19 +495,19 @@ contactLink.addEventListener('click', (e) => navClickHandler(e, 4));
 
 homeNavMobile.addEventListener('click', (e) => {
     navClickHandler(e, 1);
-    mobileNavColorHandler(homeNavMobile, 1, [aboutNavMobile, projectsNavMobile, contactNavMobile]);
+    // mobileNavColorHandler(homeNavMobile, 1, [aboutNavMobile, projectsNavMobile, contactNavMobile]);
 });
 aboutNavMobile.addEventListener('click', (e) => {
     navClickHandler(e, 2);
-    mobileNavColorHandler(aboutNavMobile, 2, [homeNavMobile, projectsNavMobile, contactNavMobile]);
+    // mobileNavColorHandler(aboutNavMobile, 2, [homeNavMobile, projectsNavMobile, contactNavMobile]);
 });
 projectsNavMobile.addEventListener('click', (e) => {
     navClickHandler(e, 3);
-    mobileNavColorHandler(projectsNavMobile, 3, [aboutNavMobile, homeNavMobile, contactNavMobile]);
+    // mobileNavColorHandler(projectsNavMobile, 3, [aboutNavMobile, homeNavMobile, contactNavMobile]);
 });
 contactNavMobile.addEventListener('click', (e) => {
     navClickHandler(e, 4);
-    mobileNavColorHandler(contactNavMobile, 4, [aboutNavMobile, projectsNavMobile, homeNavMobile]);
+    // mobileNavColorHandler(contactNavMobile, 4, [aboutNavMobile, projectsNavMobile, homeNavMobile]);
 });
 
 function navClickHandler(e, pageNum) {
@@ -553,68 +553,97 @@ window.addEventListener('wheel', (e) => {
 });
 //  Mouse/Touch Handlers
 
-// window.addEventListener('touchstart', (e) => {
-//     if (!page.waiting) {
-//         mouse.isMouseDown = true;
-//         mouse.x = e.changedTouches[0].screenX;
-//         mouse.y = e.changedTouches[0].screenY;
-//         mouse.prevX = mouse.x;
-//         mouse.mouseStart.x = e.changedTouches[0].screenX;
-//         mouse.mouseStart.y = e.changedTouches[0].screenY;
-//         mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-//         changeTransition('0s linear');
-//         window.ontouchmove = (event) => {
-//             mouse.prevX = mouse.x;
-//             mouse.x = event.changedTouches[0].screenX;
-//             mouse.y = event.changedTouches[0].screenY;
-//             mouse.dragX =
-//                 ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-//             moveSkyline();
-//         };
+window.addEventListener('touchstart', (e) => {
+    if (!page.waiting) {
+        mouse.isMouseDown = true;
+        mouse.x = e.changedTouches[0].screenX;
+        mouse.prevX = mouse.x;
+        mouse.mouseStart.x = e.changedTouches[0].screenX;
+        mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
+        changeTransition('0s linear');
+        window.ontouchmove = (event) => {
+            mouse.prevX = mouse.x;
+            mouse.x = event.changedTouches[0].screenX;
+        };
+    }
+});
+// window.addEventListener('touchend', (e) => {
+//     window.ontouchmove = null;
+//     mouse.isMouseDown = false;
+//     mouse.prevX = mouse.x;
+//     mouse.x = e.changedTouches[0].screenX;
+//     mouse.mouseEnd.x = e.changedTouches[0].screenX;
+//     mouse.dragX = 0;
+
+//     if (!page.waiting && !page.projectsWaiting) {
+//         page.prevPage = page.currentPage;
+
+//         if (mouse.prevX > mouse.x) {
+//             if (page.currentPage >= page.totalPages) {
+//                 page.currentPage = 1;
+//                 changePage();
+//                 setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+//             } else {
+//                 page.currentPage++;
+//                 changePage();
+//                 setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+//             }
+//             page.waiting = true;
+//         } else if (mouse.prevX < mouse.x) {
+//             if (page.currentPage <= 1) {
+//                 page.currentPage = page.totalPages;
+//                 page.waiting = true;
+//                 changePage();
+//                 setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+//             } else {
+//                 page.currentPage--;
+//                 page.waiting = true;
+//                 changePage();
+//                 setTimeout(() => (page.waiting = false), page.screenExitDelay + 200);
+//             }
+//         }
 //     }
 // });
-window.addEventListener('touchend', (e) => {
-    window.ontouchmove = null;
-    mouse.isMouseDown = false;
-    mouse.prevX = mouse.x;
-    mouse.x = e.changedTouches[0].screenX;
-    mouse.y = e.changedTouches[0].screenY;
-    mouse.mouseEnd.x = e.changedTouches[0].screenX;
-    mouse.mouseEnd.y = e.changedTouches[0].screenY;
-    mouse.dragX = 0;
-});
 
-projectsListWrapper.addEventListener('scroll', (e) => {
+// projectsList.addEventListener('scroll', (e) => {
+//     e.preventDefault();
+//     console.log('scroll');
+//     projectsList.style.transition = '0.3s ease';
+// });
+
+projectsList.addEventListener('wheel', (e) => {
     e.preventDefault();
-    projectsList.style.transition = '0.3s ease';
-    console.log(e);
+
+    if (window.innerWidth > 500) {
+        if (!isProjectScrolling) {
+            page.projectsWaiting = true;
+            projectsListWrapper.style.transition = '0.3s ease';
+
+            if (e.wheelDeltaY < 0) {
+                projectsListWrapper.scrollLeft +=
+                    projectsListChildren[0].clientWidth +
+                    parseFloat(
+                        window.getComputedStyle(projectsList).getPropertyValue('column-gap')
+                    ) *
+                        (projectsListArr.length - 1);
+                isProjectScrolling = true;
+            }
+            if (e.wheelDeltaY > 0) {
+                projectsListWrapper.scrollLeft -=
+                    projectsListChildren[0].clientWidth +
+                    parseFloat(
+                        window.getComputedStyle(projectsList).getPropertyValue('column-gap')
+                    ) *
+                        (projectsListArr.length - 1);
+                isProjectScrolling = true;
+            }
+            setTimeout(() => (isProjectScrolling = false), 200);
+        }
+    }
 });
-
-projectsListWrapper.addEventListener('wheel', (e) => {
+projectsList.addEventListener('mousedown', (e) => {
     e.preventDefault();
-    projectsList.style.transition = '0.3s ease';
-
-    if (e.wheelDeltaY < 0) {
-        page.projectsWaiting = true;
-        projectsObject.positionX -= projectsObject.scrollSpeed;
-    }
-    if (e.wheelDeltaY > 0) {
-        page.projectsWaiting = true;
-        projectsObject.positionX += projectsObject.scrollSpeed;
-    }
-
-    if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
-
-    if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2) {
-        projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
-        setTimeout(() => (page.projectsWaiting = false), 200);
-        // page.projectsWaiting = false;
-    }
-
-    projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
-});
-projectsListWrapper.addEventListener('mousedown', (e) => {
-    e.preventDefault();
+    console.log('mousedown');
     mouse.isMouseDown = true;
     mouse.prevX = e.x;
     mouse.x = e.x;
@@ -625,47 +654,49 @@ projectsListWrapper.addEventListener('mousedown', (e) => {
         mouse.dragX = mouse.x - mouse.prevX;
         projectsObject.positionX += mouse.dragX;
         if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
-        if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2)
-            projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
+        if (projectsObject.positionX <= -projectsList.scrollWidth + window.innerWidth / 2)
+            projectsObject.positionX = -projectsList.scrollWidth + window.innerWidth / 2;
         projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
     };
     body.style.cursor = 'grabbing';
-    projectsListWrapper.style.cursor = 'grabbing';
+    projectsList.style.cursor = 'grabbing';
 });
-projectsListWrapper.addEventListener('touchstart', (e) => {
-    mouse.isMouseDown = true;
-    mouse.x = e.changedTouches[0].screenX;
-    mouse.prevX = mouse.x;
-    mouse.mouseStart.x = e.changedTouches[0].screenX;
-    mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
-    projectsList.style.transition = '0.03s linear';
-    window.ontouchmove = (event) => {
-        mouse.prevX = mouse.x;
-        mouse.x = event.changedTouches[0].screenX;
-        mouse.dragX = mouse.x - mouse.prevX;
-        projectsObject.positionX += mouse.dragX;
-        if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
-        if (projectsObject.positionX <= -projectsList.offsetWidth + window.innerWidth / 2)
-            projectsObject.positionX = -projectsList.offsetWidth + window.innerWidth / 2;
-        projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
-    };
-    body.style.cursor = 'grabbing';
-    projectsListWrapper.style.cursor = 'grabbing';
-});
+// projectsList.addEventListener('touchstart', (e) => {
+//     mouse.isMouseDown = true;
+//     mouse.x = e.touches[0].screenX;
+//     mouse.prevX = mouse.x;
+//     mouse.mouseStart.x = e.touches[0].screenX;
+//     mouse.dragX = ((mouse.x - mouse.mouseStart.x) / window.innerWidth) * mouse.dragXMultiplier;
+//     projectsList.style.transition = '0.03s linear';
+//     window.ontouchmove = (event) => {
+//         mouse.prevX = mouse.x;
+//         mouse.x = event.touches[0].screenX;
+//         mouse.dragX = mouse.x - mouse.prevX;
+//         projectsObject.positionX += mouse.dragX;
+//         if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
+//         if (projectsObject.positionX <= -projectsList.scrollWidth + window.innerWidth / 2)
+//             projectsObject.positionX = -projectsList.scrollWidth + window.innerWidth / 2;
+//         projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
+//         console.log('touchmove');
+//     };
+//     body.style.cursor = 'grabbing';
+//     projectsListWrapper.style.cursor = 'grabbing';
+// });
 
 window.addEventListener('mouseup', (e) => {
+    console.log('mouseup');
     window.onmousemove = null;
     mouse.dragX = 0;
     mouse.prevX = mouse.x;
     mouse.x = e.x;
     body.style.cursor = 'default';
-    projectsListWrapper.style.cursor = 'grab';
+    projectsList.style.cursor = 'grab';
 });
 
-projectsListWrapper.addEventListener('mouseover', (e) => {
+projectsList.addEventListener('mouseover', (e) => {
     page.projectsWaiting = true;
 });
-projectsListWrapper.addEventListener('mouseout', (e) => (page.projectsWaiting = false));
+projectsList.addEventListener('mouseout', (e) => (page.projectsWaiting = false));
 
 function initPage() {
     homeIntro.classList.remove('text');
@@ -758,14 +789,20 @@ function initProjects() {
 
         projectsListChildren = document.querySelectorAll('.projects-list-item');
     });
+    let projectsListBgLineEl = document.createElement('div');
+    projectsListBgLineEl.classList.add('projects-list-bg-line');
+    projectsListBgLineEl.style.width = `${
+        100 +
+        parseFloat(window.getComputedStyle(projectsList).getPropertyValue('column-gap')) *
+            (projectsListArr.length - 1)
+    }%`;
+    projectsList.append(projectsListBgLineEl);
 }
 
 function moveSkyline() {
-    skyline1.style.boxShadow = `0px 0px calc(20px + 2.5vw) calc(18px + 0.6vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.3)`;
     skyline1.style.transform = `translateX(${
         SKYLINE_1 + SKYLINE_1_STEP * (page.currentPage - 1)
     }%)`;
-    skyline2.style.boxShadow = `0px 0px calc(25px + 3vw) calc(50px + 1.1vw) hsla(var(--page${page.currentPage}-hue), 100%, 50%, 0.5)`;
     skyline2.style.transform = `translateX(${
         SKYLINE_2 + SKYLINE_2_STEP * (page.currentPage - 1)
     }%)`;
@@ -821,9 +858,9 @@ function initClouds(count) {
         ];
         const cloud = {
             x: x,
-            y: getRandomArbitrary(25, 55),
+            y: getRandomArbitrary(35, 75),
             size: getRandomArbitrary(3, 10),
-            opacity: getRandomArbitrary(0.95, 1),
+            opacity: getRandomArbitrary(0.9, 1),
             animationDuration: getRandomArbitrary(60000, 400000),
             animationDelay: getRandomArbitrary(-100000, -10000),
             zIndex: Math.floor(getRandomArbitrary(6, 10)),
