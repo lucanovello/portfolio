@@ -17,6 +17,9 @@ const aboutContainer = document.getElementById('about-container');
 const projectsContainer = document.getElementById('projects-container');
 const contactContainer = document.getElementById('contact-container');
 
+const contactForm = document.getElementById('form');
+const contactSuccessMessage = document.getElementById('contact-success-message');
+
 const [homeTitle, aboutTitle, projectsTitle, contactTitle] = document.querySelectorAll('.title');
 const [homeIntro, homeText, aboutText, projectsText, contactText] =
     document.querySelectorAll('.text');
@@ -27,8 +30,8 @@ const projectsListItem = document.querySelectorAll('#projects-list-item');
 let projectsListChildren;
 const projectsListArr = [
     {
-        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
-        title: 'Ecommerce Full Stack Site',
+        image: "url('./images/projects/ecommerce-mern-hero.jpg')",
+        title: 'Ecommerce Website (MERN) ',
         skills: [
             {
                 skill: 'React',
@@ -56,202 +59,11 @@ const projectsListArr = [
             },
         ],
         description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+            'A single page application for an e-commerce website using the MERN stack (MongoDB Atlas, Express, React, and Node.js). Users of the website can easily create and log into their own accounts, browse and filter through a wide range of products, complete checkout transactions, review their previous orders, and update their login credentials as needed.',
         links: [
             {
                 name: 'github',
-                href: 'https://github.com/lunovello/up2dateSolutions',
-                class: 'github-icon',
-                icon: `<svg
-                class="projects-list-item-icon github-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-            </svg>`,
-            },
-            {
-                name: 'external',
-                href: 'https://www.up2datesolutions.com/',
-                class: 'external-icon',
-                icon: `<svg
-                class="projects-list-item-icon external-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
-                ></path>
-            </svg>`,
-            },
-        ],
-    },
-    {
-        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
-        title: 'Social Media Full Stack Site',
-        skills: [
-            {
-                skill: 'React',
-                class: 'frontend',
-            },
-            {
-                skill: 'CSS',
-                class: 'frontend',
-            },
-            {
-                skill: 'Nodejs',
-                class: 'backend',
-            },
-            {
-                skill: 'Express',
-                class: 'backend',
-            },
-            {
-                skill: 'MongoDB',
-                class: 'backend',
-            },
-            {
-                skill: 'Adobe CC',
-                class: 'design',
-            },
-        ],
-        description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
-        links: [
-            {
-                name: 'github',
-                href: 'https://github.com/lunovello/up2dateSolutions',
-                class: 'github-icon',
-                icon: `<svg
-                class="projects-list-item-icon github-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-            </svg>`,
-            },
-            {
-                name: 'external',
-                href: 'https://www.up2datesolutions.com/',
-                class: 'external-icon',
-                icon: `<svg
-                class="projects-list-item-icon external-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
-                ></path>
-            </svg>`,
-            },
-        ],
-    },
-    {
-        image: "url('/images/projects/u2d/u2d-website-snippet.jpg')",
-        title: 'Full Stack Site',
-        skills: [
-            {
-                skill: 'React',
-                class: 'frontend',
-            },
-            {
-                skill: 'CSS',
-                class: 'frontend',
-            },
-            {
-                skill: 'Nodejs',
-                class: 'backend',
-            },
-            {
-                skill: 'Express',
-                class: 'backend',
-            },
-            {
-                skill: 'MongoDB',
-                class: 'backend',
-            },
-            {
-                skill: 'Adobe CC',
-                class: 'design',
-            },
-        ],
-        description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
-        links: [
-            {
-                name: 'github',
-                href: 'https://github.com/lunovello/up2dateSolutions',
-                class: 'github-icon',
-                icon: `<svg
-                class="projects-list-item-icon github-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-            </svg>`,
-            },
-            {
-                name: 'external',
-                href: 'https://www.up2datesolutions.com/',
-                class: 'external-icon',
-                icon: `<svg
-                class="projects-list-item-icon external-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                x="0px"
-                y="0px"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
-                ></path>
-            </svg>`,
-            },
-        ],
-    },
-    {
-        image: "url('/images/projects/u2d/u2d-hero.jpg')",
-        title: 'Up2DateSolutions.com',
-        skills: [
-            {
-                skill: 'HTML',
-                class: 'frontend',
-            },
-            {
-                skill: 'CSS',
-                class: 'frontend',
-            },
-            {
-                skill: 'JavaScript',
-                class: 'frontend',
-            },
-            {
-                skill: 'Adobe CC',
-                class: 'design',
-            },
-        ],
-        description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
-        url: 'https://www.up2datesolutions.com/',
-        links: [
-            {
-                name: 'github',
-                href: 'https://github.com/lunovello/up2dateSolutions',
+                href: 'https://github.com/lucanovello/ecommerce-site-project',
                 class: 'github-icon',
                 icon: `<svg
                     class="projects-list-item-icon github-icon"
@@ -267,7 +79,7 @@ const projectsListArr = [
             },
             {
                 name: 'external',
-                href: 'https://www.up2datesolutions.com/',
+                href: 'https://ecommerce-mern-app.lucanovello.com/',
                 class: 'external-icon',
                 icon: `<svg
                 class="projects-list-item-icon external-icon"
@@ -284,8 +96,8 @@ const projectsListArr = [
         ],
     },
     {
-        image: "url('/images/projects/u2d/rizza-hero.jpg')",
-        title: 'RizzaInsurance.com',
+        image: "url('./images/projects/u2d-hero.jpg')",
+        title: 'www.Up2DateSolutions.com',
         skills: [
             {
                 skill: 'HTML',
@@ -305,9 +117,82 @@ const projectsListArr = [
             },
         ],
         description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
-        url: 'https://www.rizzainsurance.com/',
+            'UP2DATE Solutions is an IT Services and Consulting company. This is a responsive and mobile friendly, single page website built using pure JavaScript and CSS. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
         links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
+            {
+                name: 'external',
+                href: 'https://www.up2datesolutions.com/',
+                class: 'external-icon',
+                icon: `<svg
+                class="projects-list-item-icon external-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                ></path>
+            </svg>`,
+            },
+        ],
+    },
+    {
+        image: "url('./images/projects/rizza-hero.jpg')",
+        title: 'www.RizzaInsurance.com',
+        skills: [
+            {
+                skill: 'HTML',
+                class: 'frontend',
+            },
+            {
+                skill: 'CSS',
+                class: 'frontend',
+            },
+            {
+                skill: 'JavaScript',
+                class: 'frontend',
+            },
+            {
+                skill: 'Adobe CC',
+                class: 'design',
+            },
+        ],
+        description:
+            'Rizza Insurance & Financial Services offer a wide variety of insurance and financial services products. This single page website is built using pure JavaScript and CSS and is fully responsive and mobile friendly. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
+        links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/rizza-insurance',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
             {
                 name: 'external',
                 href: 'https://www.rizzainsurance.com/',
@@ -327,8 +212,8 @@ const projectsListArr = [
         ],
     },
     {
-        image: "url('/images/projects/u2d/fps-hero.jpg')",
-        title: 'FoxtailPropertyServices.com',
+        image: "url('./images/projects/fps-hero.jpg')",
+        title: 'www.FoxtailPropertyServices.com',
         skills: [
             {
                 skill: 'HTML',
@@ -339,7 +224,7 @@ const projectsListArr = [
                 class: 'frontend',
             },
             {
-                skill: 'Wordpress',
+                skill: 'JavaScript',
                 class: 'frontend',
             },
             {
@@ -348,9 +233,24 @@ const projectsListArr = [
             },
         ],
         description:
-            'Fully responsive and mobile friendly, single page website built using HTML5, CSS3 and JavaScript. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
-        url: 'https://www.foxtailpropertyservices.com/',
+            'Foxtail Property Services Inc. is a lawn and garden maintence company. This is a single page website, built with pure JavaScript and CSS, and is fully responsive and mobile friendly. The logo and graphics were created and processed using Adobe Illustrator and Photoshop.',
         links: [
+            {
+                name: 'github',
+                href: 'https://github.com/lunovello/up2dateSolutions',
+                class: 'github-icon',
+                icon: `<svg
+                class="projects-list-item-icon github-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+            </svg>`,
+            },
             {
                 name: 'external',
                 href: 'http://www.foxtailpropertyservices.com/',
@@ -453,6 +353,7 @@ navContactMobile.addEventListener('click', (e) => navClickHandler(e, 4));
 
 function navClickHandler(e, pageNum) {
     e.preventDefault();
+    projectsListWrapper.scrollLeft = 0;
     if (page.currentPage != pageNum && !page.waiting) {
         page.prevPage = page.currentPage;
         page.currentPage = pageNum;
@@ -512,10 +413,7 @@ window.addEventListener('touchstart', (e) => {
 window.addEventListener('touchend', (e) => {
     window.ontouchmove = null;
     mouse.isMouseDown = false;
-    // mouse.prevX = mouse.x;
-    // mouse.x = e.changedTouches[0].clientX;
     mouse.mouseEnd.x = e.changedTouches[0].clientX;
-    // console.log(page.waiting, page.projectsWaiting, mouse.prevX, mouse.x);
     if (!page.waiting && !page.projectsWaiting) {
         page.prevPage = page.currentPage;
 
@@ -548,52 +446,21 @@ window.addEventListener('touchend', (e) => {
 });
 
 projectsList.addEventListener('touchstart', (e) => (page.projectsWaiting = true));
-projectsList.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if (window.innerWidth > 500) {
-        if (!isProjectScrolling) {
-            page.projectsWaiting = true;
-            projectsListWrapper.style.transition = '0.3s ease';
 
-            if (e.wheelDeltaY < 0) {
-                projectsListWrapper.scrollLeft +=
-                    projectsListChildren[0].clientWidth +
-                    parseFloat(
-                        window.getComputedStyle(projectsList).getPropertyValue('column-gap')
-                    ) *
-                        (projectsListArr.length - 1);
-                isProjectScrolling = true;
-            }
-            if (e.wheelDeltaY > 0) {
-                projectsListWrapper.scrollLeft -=
-                    projectsListChildren[0].clientWidth +
-                    parseFloat(
-                        window.getComputedStyle(projectsList).getPropertyValue('column-gap')
-                    ) *
-                        (projectsListArr.length - 1);
-                isProjectScrolling = true;
-            }
-            setTimeout(() => {
-                isProjectScrolling = false;
-            }, 300);
-        }
-    }
+projectsList.addEventListener('wheel', (e) => {
+    projectsListWrapper.scrollLeft += e.deltaY;
 });
+
 projectsList.addEventListener('mousedown', (e) => {
     e.preventDefault();
     mouse.isMouseDown = true;
     mouse.prevX = e.x;
     mouse.x = e.x;
-    projectsList.style.transition = '0.03s linear';
     window.onmousemove = (e) => {
         mouse.prevX = mouse.x;
         mouse.x = e.x;
-        mouse.dragX = mouse.x - mouse.prevX;
-        projectsObject.positionX += mouse.dragX;
-        if (projectsObject.positionX >= 0) projectsObject.positionX = 0;
-        if (projectsObject.positionX <= -projectsList.scrollWidth + window.innerWidth / 2)
-            projectsObject.positionX = -projectsList.scrollWidth + window.innerWidth / 2;
-        projectsList.style.transform = `translateX(${projectsObject.positionX}px)`;
+        mouse.dragX = mouse.prevX - mouse.x;
+        projectsListWrapper.scrollLeft += mouse.dragX;
     };
     body.style.cursor = 'grabbing';
     projectsList.style.cursor = 'grabbing';
@@ -613,9 +480,42 @@ projectsList.addEventListener('mouseover', (e) => {
 });
 projectsList.addEventListener('mouseout', (e) => (page.projectsWaiting = false));
 
+//  Contact form send to server and respond with success or error
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // Prevent the form from being submitted
+
+    // Get the form data
+    const formData = new FormData(contactForm);
+
+    // Send the form data to the server using an XMLHttpRequest
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'sendmail.php');
+    xhr.onload = function () {
+        if (xhr.getResponseHeader('X-Contact-Form-Status') === 'success') {
+            // Display a success message
+            contactSuccessMessage.innerHTML =
+                '<span>&#10003;</span> Thank you! Your message has been sent';
+            contactSuccessMessage.classList = 'contact-success-message-show';
+            setTimeout(() => {
+                contactSuccessMessage.classList = 'contact-success-message-hide';
+            }, 2000);
+            document.querySelector('.contact-name').value = '';
+            document.querySelector('.contact-email').value = '';
+            document.querySelector('.contact-subject').value = '';
+            document.querySelector('.contact-message').value = '';
+        } else {
+            contactSuccessMessage.innerHTML =
+                '<span>&#9447;</span> Sorry there was an error, please try again later';
+            contactSuccessMessage.classList = 'contact-success-message-show';
+            setTimeout(() => {
+                contactSuccessMessage.classList = 'contact-success-message-hide';
+            }, 2000);
+        }
+    };
+    xhr.send(formData);
+});
+
 function initPage() {
-    // homeIntro.classList.remove('text');
-    // homeText.classList.remove('text');
     setTimeout(() => {
         introScreen.classList.add('disappear');
     }, page.introDelay);
@@ -644,14 +544,6 @@ function initCanvas() {
     drawStars();
 }
 function initProjects() {
-    // let projectsListBgLineEl = document.createElement('div');
-    // projectsListBgLineEl.classList.add('projects-list-bg-line');
-    // projectsListBgLineEl.style.width = `${
-    //     100 +
-    //     parseFloat(window.getComputedStyle(projectsList).getPropertyValue('column-gap')) *
-    //         (projectsListArr.length - 1)
-    // }%`;
-    // projectsList.append(projectsListBgLineEl);
     projectsListArr.forEach((project) => {
         let projectsListItemEl = document.createElement('li');
         projectsListItemEl.classList.add('projects-list-item');
@@ -660,10 +552,27 @@ function initProjects() {
 
         let projectsListImageLinkEl = document.createElement('div');
         projectsListImageLinkEl.draggable = false;
-
         projectsListImageLinkEl.classList.add('projects-list-item-image-wrapper');
-        projectsListImageLinkEl.style.backgroundImage = project.image;
         projectsListItemEl.append(projectsListImageLinkEl);
+
+        let projectsListImageEl = document.createElement('div');
+        projectsListImageEl.draggable = false;
+        projectsListImageEl.classList.add('projects-list-item-image');
+        projectsListImageEl.style.backgroundImage = project.image;
+        projectsListImageLinkEl.append(projectsListImageEl);
+
+        let projectsListImageTextWrapperEl = document.createElement('div');
+        projectsListImageTextWrapperEl.classList.add('projects-list-item-image-text-wrapper');
+        projectsListImageLinkEl.append(projectsListImageTextWrapperEl);
+
+        let projectsListTextDescEl = document.createElement('p');
+        projectsListTextDescEl.classList.add('projects-list-item-text-desc');
+        projectsListTextDescEl.innerText = project.description;
+        projectsListImageTextWrapperEl.append(projectsListTextDescEl);
+
+        let projectsListLinksEl = document.createElement('div');
+        projectsListLinksEl.classList.add('projects-external-links-wrapper');
+        projectsListImageTextWrapperEl.append(projectsListLinksEl);
 
         let projectsListTextWrapperEl = document.createElement('div');
         projectsListTextWrapperEl.classList.add('projects-list-item-text-wrapper');
@@ -685,15 +594,6 @@ function initProjects() {
             projectsListTextSubtitleEl.append(projectsListTextSkillEl);
         });
 
-        let projectsListTextDescEl = document.createElement('p');
-        projectsListTextDescEl.classList.add('projects-list-item-text-desc');
-        projectsListTextDescEl.innerText = project.description;
-        projectsListTextWrapperEl.append(projectsListTextDescEl);
-
-        let projectsListLinksEl = document.createElement('div');
-        projectsListLinksEl.classList.add('projects-external-links-wrapper');
-        projectsListTextWrapperEl.append(projectsListLinksEl);
-
         project.links.forEach((link) => {
             let projectsListLinkEl = document.createElement('a');
             link.href && (projectsListLinkEl.href = link.href);
@@ -704,6 +604,7 @@ function initProjects() {
             projectsListLinksEl.append(projectsListLinkEl);
         });
         projectsListChildren = document.querySelectorAll('.projects-list-item');
+        projectsListWrapper.scrollLeft = 0;
     });
 }
 
@@ -780,7 +681,8 @@ function initClouds(count) {
         };
 
         const cloudImg = document.createElement('img');
-        cloudImg.src = `images/cloud${Math.round(getRandomArbitrary(1, 4))}.svg`;
+        cloudImg.src = `./images/background/cloud${Math.round(getRandomArbitrary(1, 4))}.svg`;
+        cloudImg.alt = 'cloud image';
         Object.assign(cloudImg.style, cloudStyles);
         cloudImg.animate(cloud.cloudDrifting, cloudDriftingOptions);
         skylineWrapper.appendChild(cloudImg);
@@ -837,7 +739,6 @@ function changeClass(elementsRemoveArr, removeClassArr, elementsAddArr, addClass
     }
 }
 
-//  Transition Between Pages
 function pageTransition(currentPage, nextPage, exitStyle, enterStyle) {
     currentPage.style.transition = `${page.screenExitDelay}ms ease-in-out, opacity ${page.screenEnterDelay}ms ease-in-out`;
     nextPage.style.transition = `0s, opacity ${page.screenEnterDelay}ms ease-in-out`;
@@ -893,24 +794,7 @@ function changePage() {
                 [navHomeMobile],
                 'active-link-wrapper'
             );
-
             changeClass([navAboutIcon, navProjectsIcon, navContactIcon], ['active-link']);
-
-            //  Text Transitions
-            // setTimeout(() => {
-            //     homeTitle.classList.remove('text2');
-            //     homeIntro.classList.remove('text');
-            //     homeText.classList.remove('text');
-            // }, page.textDelay);
-
-            // aboutTitle.classList.add('text2');
-            // projectsTitle.classList.add('text2');
-            // contactTitle.classList.add('text2');
-
-            // aboutText.classList.add('text');
-            // projectsText.classList.add('text');
-            // contactText.classList.add('text');
-
             changeSkylineTransition('1s ease-in-out 0.1s');
             moveSkyline();
             skylineLightsColor.style.fill = 'var(--page1-color)';
@@ -940,31 +824,16 @@ function changePage() {
                 [navAboutIcon],
                 'active-link'
             );
-
-            //  Text Transitions
-            // setTimeout(() => {
-            //     aboutTitle.classList.remove('text2');
-            //     aboutText.classList.remove('text');
-            // }, page.textDelay);
-
-            // homeTitle.classList.add('text2');
-            // projectsTitle.classList.add('text2');
-            // contactTitle.classList.add('text2');
-
-            // homeIntro.classList.add('text');
-            // homeText.classList.add('text');
-            // projectsText.classList.add('text');
-            // contactText.classList.add('text');
-
             changeSkylineTransition('1s ease-in-out 0.1s');
             moveSkyline();
             skylineLightsColor.style.fill = 'var(--page2-color)';
             skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page2-color))`;
             break;
+
         case 3:
             //  Screen Transitions
             pageTransition(pagesArr[page.prevPage - 1], projectsContainer, exitStyle, enterStyle);
-
+            projectsListWrapper.scrollLeft = 0;
             //  Link Transitions
             changeClass(
                 [logo, navAbout, navContact],
@@ -984,27 +853,12 @@ function changePage() {
                 [navProjectsIcon],
                 'active-link'
             );
-
-            //  Text Transitions
-            // setTimeout(() => {
-            //     projectsTitle.classList.remove('text2');
-            //     projectsText.classList.remove('text');
-            // }, page.textDelay);
-
-            // homeTitle.classList.add('text2');
-            // aboutTitle.classList.add('text2');
-            // contactTitle.classList.add('text2');
-
-            // homeIntro.classList.add('text');
-            // homeText.classList.add('text');
-            // aboutText.classList.add('text');
-            // contactText.classList.add('text');
-
             changeSkylineTransition('1s ease-in-out 0.1s');
             moveSkyline();
             skylineLightsColor.style.fill = 'var(--page3-color)';
             skylineLightsColor.style.filter = `drop-shadow(0 0 ${LIGHT_SIZE}px var(--page3-color))`;
             break;
+
         case 4:
             //  Screen Transitions
             pageTransition(pagesArr[page.prevPage - 1], contactContainer, exitStyle, enterStyle);
@@ -1028,22 +882,6 @@ function changePage() {
                 [navContactIcon],
                 'active-link'
             );
-
-            //  Text Transitions
-            // setTimeout(() => {
-            //     contactTitle.classList.remove('text2');
-            //     contactText.classList.remove('text');
-            // }, page.textDelay);
-
-            // homeTitle.classList.add('text2');
-            // aboutTitle.classList.add('text2');
-            // projectsTitle.classList.add('text2');
-
-            // homeIntro.classList.add('text');
-            // homeText.classList.add('text');
-            // aboutText.classList.add('text');
-            // projectsText.classList.add('text');
-
             changeSkylineTransition('1s ease-in-out 0.1s');
             moveSkyline();
             skylineLightsColor.style.fill = 'var(--page4-color)';
