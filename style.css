@@ -1385,18 +1385,21 @@ canvas {
 
 .contact-success-message-hide,
 .contact-success-message-show {
-    margin-top: 5vh;
     padding: 5vh;
     display: flex;
     justify-content: center;
     align-items: center;
     align-self: center;
+    position: fixed;
+    bottom: 5vh;
+    border: 1px solid white;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.9);
+    background: linear-gradient(to bottom, hsla(200, 3%, 10%, 0.9), hsla(200, 3%, 5%, 0.9));
     font-size: 16px;
     font-weight: 700;
     text-align: center;
     color: white;
+    z-index: 9999999;
 }
 
 .contact-success-message-hide {
