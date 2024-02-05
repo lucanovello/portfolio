@@ -541,7 +541,7 @@ function initCanvas() {
     ctx.canvas.height = window.innerHeight;
 
     createStars(STAR_COUNT);
-    drawStars();
+    drawStars(starArr);
 }
 function initProjects() {
     projectsListArr.forEach((project) => {
@@ -627,8 +627,8 @@ function createStars(num) {
     }
 }
 
-function drawStars() {
-    starArr.forEach((star) => {
+function drawStars(arr) {
+    arr.forEach((star) => {
         ctx.fillStyle = `hsla(${star.h},${star.s}%,${star.l}%,${star.a})`;
         ctx.fillRect(
             star.xNormalized * window.innerWidth,
@@ -701,7 +701,7 @@ function getRandomArbitrary(min, max) {
 function resizeHandler() {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
-    drawStars();
+    drawStars(starArr);
 }
 
 //  Skyline functions

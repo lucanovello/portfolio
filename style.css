@@ -80,7 +80,6 @@
     padding: 0;
     box-sizing: border-box;
     /* scroll-behavior: smooth; */
-    user-select: none;
 }
 
 *:focus {
@@ -1153,7 +1152,6 @@ canvas {
     bottom: 0;
     left: 0;
     right: 0;
-    user-select: none;
     background-position: center top;
     background-size: 100%;
     background-repeat: no-repeat;
